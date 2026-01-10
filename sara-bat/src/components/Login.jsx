@@ -1,36 +1,34 @@
-import { useState } from 'react';
-import { Navigate, useNavigate } from "react-router-dom";
-import Home from './Home';
-function Login() {
+import { useState } from "react";
+import { useNavigate, Link } from "react-router-dom";
+
+function Login({ onLogin }) {
   const navigate = useNavigate();
 
   const [formData, setFormData] = useState({
-    name: '',
-    password: ''
+    name: "",
+    password: ""
   });
 
   const handleChange = (e) => {
-    const { name, value } = e.target;
-    setFormData(prev => ({
-      ...prev,
-      [name]: value
-    }));
+    setFormData({
+      ...formData,
+      [e.target.name]: e.target.value
+    });
   };
 
   const handleLogin = async (e) => {
     e.preventDefault();
-    const result = await fetch(
-      `http://localhost:3000/users?username=${formData.name}&website=${formData.password}`
+
+    const res = await fetch(
+      `http://localhost:3000/users?username=${formData.name}&password=${formData.password}`
     );
 
-    const users = await result.json();
-    //לבנות מערך משתמשים
+    const users = await res.json();
 
     if (users.length > 0) {
-      alert(`התחברות הצליחה! שלום ${users[0].name}`);
-      localStorage.setItem('curentUser', JSON.stringify(users[0]));
-
-      navigate("/Home");
+      onLogin(users[0]); 
+      localStorage.setItem("currentUser", JSON.stringify(users[0]));
+      navigate("/home"); 
     } else {
       alert("שם משתמש או סיסמה שגויים");
     }
@@ -38,26 +36,18 @@ function Login() {
 
   return (
     <form onSubmit={handleLogin}>
-      <input
-        type="text"
-        name="name"
-        placeholder="name"
-        value={formData.name}
-        onChange={handleChange}
-      />
-
-      <input
-        type="password"
-        name="password"
-        placeholder="password"
-        value={formData.password}
-        onChange={handleChange}
-      />
+      <input name="name" placeholder="name" onChange={handleChange} />
+      <input name="password" type="password" placeholder="password" onChange={handleChange} />
 
       <button type="submit">Login</button>
+
+
+      <p>
+        לא רשומה?
+        <Link to="/register"> הרשמי כאן</Link>
+      </p>
     </form>
   );
-
 }
 
 export default Login;

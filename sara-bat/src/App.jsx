@@ -1,19 +1,46 @@
-import { useState } from 'react'
-import { Routes, Route } from "react-router-dom"
-import  Login from './components/Login'
-// import SignUp from './components/SignUp'
-import Home from './components/Home'
-import './App.css'
-
+import { Routes, Route, Navigate } from "react-router-dom";
+import { useState, useEffect } from "react";
+import Login from "./components/Login";
+import Register from "./components/Register";
+import Home from "./components/Home";
+import CompleteProfile from "./components/CompleteProfile";
 
 function App() {
+  const [user, setUser] = useState(null);
+  const [loading, setLoading] = useState(true);
+
+  useEffect(() => {
+    const savedUser = localStorage.getItem("currentUser");
+    if (savedUser) {
+      setUser(JSON.parse(savedUser));
+    }
+    setLoading(false);
+  }, []);
+
+  if (loading) {
+    return <p>טוען...</p>;
+  }
+
   return (
     <Routes>
-      <Route path="/" element={<Home />} />
-      <Route path="/login" element={<Login />} />
-      {/* <Route path="/signup" element={<SignUp />} /> */}
+      <Route
+        path="/"
+        element={user ? <Navigate to="/home" /> : <Login onLogin={setUser} />}
+      />
+
+      <Route
+        path="/register"
+        element={user ? <Navigate to="/home" /> : <Register />}
+      />
+      <Route path="/complete-profile" 
+         element={user ? <Navigate to="/complete-profile" /> : <CompleteProfile />}
+/>
+      <Route
+        path="/home"
+        element={user ? <Home user={user} /> : <Navigate to="/" />}
+      />
     </Routes>
   );
 }
 
-export default App
+export default App;
