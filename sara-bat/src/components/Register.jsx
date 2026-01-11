@@ -1,5 +1,9 @@
 import { useState } from 'react';
+import { useNavigate } from "react-router-dom";
+
 function Register() {
+    const navigate = useNavigate();
+
 
     const [formData, setFormData] = useState({
         name: '',
@@ -28,7 +32,7 @@ function Register() {
     
       navigate("/complete-profile", {
         state: {
-          username: formData.username,
+          username: formData.name,
           password: formData.password
         }
       });

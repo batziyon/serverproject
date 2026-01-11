@@ -1,6 +1,7 @@
 import { useLocation, useNavigate } from "react-router-dom";
 import { useState } from "react";
 
+const user="jkl;";
 function CompleteProfile() {
   const location = useLocation();
   const navigate = useNavigate();
@@ -28,13 +29,14 @@ function CompleteProfile() {
       password,
       ...profile
     };
+   
 
     console.log("משתמש חדש:", newUser);
 
     // בפרויקט אמיתי → POST
     alert("ההרשמה הושלמה בהצלחה!");
 
-    navigate("/");
+    navigate("/Home");
   };
 
   if (!username) {
