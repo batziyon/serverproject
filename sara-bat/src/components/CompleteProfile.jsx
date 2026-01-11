@@ -1,7 +1,6 @@
 import { useLocation, useNavigate } from "react-router-dom";
 import { useState } from "react";
 
-const user="jkl;";
 function CompleteProfile() {
   const location = useLocation();
   const navigate = useNavigate();

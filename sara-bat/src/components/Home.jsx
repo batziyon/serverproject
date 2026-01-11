@@ -1,12 +1,34 @@
-import  Login from './Login'
+import { NavLink, Outlet, useNavigate } from "react-router-dom";
 
+function Home({ user }) {
+  const navigate = useNavigate();
 
-function Home() {
-    return (
-        <div>
-            <h1>Home</h1>
-         
-        </div>
-    )
+  const handleLogout = () => {
+    localStorage.clear(); // אם שמרת משתמש
+    navigate("/login");
+  };
+
+  return (
+    <div>
+      <header>
+        <h1>{user.fullName}</h1>
+      </header>
+
+      <nav>
+        <NavLink to="info">Info</NavLink> |{" "}
+        <NavLink to="todos">Todos</NavLink> |{" "}
+        <NavLink to="posts">Posts</NavLink> |{" "}
+        <NavLink to="albums">Albums</NavLink> |{" "}
+        <button onClick={handleLogout}>Logout</button>
+      </nav>
+
+      <hr />
+
+      <main>
+        <Outlet />
+      </main>
+    </div>
+  );
 }
+
 export default Home;
