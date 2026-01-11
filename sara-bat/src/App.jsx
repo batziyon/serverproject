@@ -17,9 +17,7 @@ function App() {
     setLoading(false);
   }, []);
 
-  if (loading) {
-    return <p>טוען...</p>;
-  }
+  if (loading) return <p>טוען...</p>;
 
   return (
     <Routes>
@@ -27,14 +25,14 @@ function App() {
         path="/"
         element={user ? <Navigate to="/home" /> : <Login onLogin={setUser} />}
       />
-
       <Route
         path="/register"
         element={user ? <Navigate to="/home" /> : <Register />}
       />
-      <Route path="/complete-profile" 
-         element={user ? <Navigate to="/complete-profile" /> : <CompleteProfile />}
-/>
+      <Route
+        path="/complete-profile"
+        element={user ? <Navigate to="/home" /> : <CompleteProfile setUser={setUser} />}
+      />
       <Route
         path="/home"
         element={user ? <Home user={user} /> : <Navigate to="/" />}

@@ -1,5 +1,6 @@
 import { useState } from "react";
 import { useNavigate, Link } from "react-router-dom";
+import { login } from "../api/api";
 
 function Login({ onLogin }) {
   const navigate = useNavigate();
@@ -10,37 +11,55 @@ function Login({ onLogin }) {
   });
 
   const handleChange = (e) => {
-    setFormData({
-      ...formData,
-      [e.target.name]: e.target.value
-    });
+    const { name, value } = e.target;
+    setFormData(prev => ({ ...prev, [name]: value }));
   };
 
   const handleLogin = async (e) => {
     e.preventDefault();
 
-    const res = await fetch(
-      `http://localhost:3000/users?username=${formData.name}&password=${formData.password}`
-    );
+    try {
+      const user = await login(formData.name, formData.password);
 
-    const users = await res.json();
+      if (!user) {
+        alert("שם משתמש או סיסמה שגויים");
+        return;
+      }
 
-    if (users.length > 0) {
-      onLogin(users[0]); 
-      localStorage.setItem("currentUser", JSON.stringify(users[0]));
-      navigate("/home"); 
-    } else {
-      alert("שם משתמש או סיסמה שגויים");
+      const authUser = {
+        id: user.id,
+        username: user.username
+      };
+
+      localStorage.setItem("currentUser", JSON.stringify(authUser));
+      onLogin(authUser);
+      navigate("/home");
+
+    } catch (err) {
+      alert(err.message);
     }
   };
 
   return (
     <form onSubmit={handleLogin}>
-      <input name="name" placeholder="name" onChange={handleChange} />
-      <input name="password" type="password" placeholder="password" onChange={handleChange} />
+      <input
+        name="name"
+        placeholder="name"
+        value={formData.name}
+        onChange={handleChange}
+        required
+      />
+
+      <input
+        name="password"
+        type="password"
+        placeholder="password"
+        value={formData.password}
+        onChange={handleChange}
+        required
+      />
 
       <button type="submit">Login</button>
-
 
       <p>
         לא רשומה?
