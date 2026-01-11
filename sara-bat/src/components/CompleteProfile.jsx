@@ -50,13 +50,13 @@ function CompleteProfile({ setUser }) {
         bs: profile.bs
       }
     };
+   
 
     try {
       const savedUser = await createUser(newUser);
 
       localStorage.setItem("currentUser", JSON.stringify(savedUser));
       setUser(savedUser);
-
       alert("ההרשמה הושלמה בהצלחה!");
       navigate("/home");
 

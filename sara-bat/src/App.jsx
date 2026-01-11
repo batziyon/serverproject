@@ -4,8 +4,13 @@ import Login from "./components/Login";
 import Register from "./components/Register";
 import Home from "./components/Home";
 import CompleteProfile from "./components/CompleteProfile";
+import Info from "./components/Info";
+import Todos from "./components/Todos";
+import Posts from "./components/Posts";
+import Albums from "./components/Albums";
 
 function App() {
+
   const [user, setUser] = useState(null);
   const [loading, setLoading] = useState(true);
 
@@ -38,6 +43,7 @@ function App() {
         element={user ? <Home user={user} /> : <Navigate to="/" />}
       />
     </Routes>
+  
   );
 }
 
