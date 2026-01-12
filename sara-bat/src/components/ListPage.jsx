@@ -1,5 +1,7 @@
 import { useEffect, useState } from "react";
 import { useLocation } from "react-router-dom";
+import { deleteData } from "./api";
+import { selectTodos } from "../api/api";
 
 function ListPage({ title, fetchData, searchableFields = [], sortableFields = [] }) {
   const location = useLocation();
@@ -7,6 +9,7 @@ function ListPage({ title, fetchData, searchableFields = [], sortableFields = []
   const isTodo = location.pathname.includes("/todo");
   const isPost = location.pathname.includes("/posts");
   const isAlbum = location.pathname.includes("/albums");
+  //const [todos, setTodos] = useState({});
 
   const [items, setItems] = useState([]);
   const [filtered, setFiltered] = useState([]);
@@ -28,8 +31,8 @@ function ListPage({ title, fetchData, searchableFields = [], sortableFields = []
   const handleSearch = () => {
     const results = items.filter(item => {
       const matchesText = String(item[searchField]).toLowerCase().includes(searchValue.toLowerCase());
-      const matchesStatus = isTodo? filterStatus === "all" ? true :
-          filterStatus === "completed" ? item.completed :!item.completed : true;
+      const matchesStatus = isTodo ? filterStatus === "all" ? true :
+        filterStatus === "completed" ? item.completed : !item.completed : true;
       return matchesText && matchesStatus;
     });
     setFiltered(results);
@@ -49,8 +52,8 @@ function ListPage({ title, fetchData, searchableFields = [], sortableFields = []
       const matchesText = String(i[searchField]).toLowerCase().includes(searchValue.toLowerCase());
       const matchesStatus =
         filterStatus === "all" ? true :
-        filterStatus === "completed" ? i.completed :
-        !i.completed;
+          filterStatus === "completed" ? i.completed :
+            !i.completed;
       return matchesText && matchesStatus;
     });
     setFiltered(results);
@@ -59,13 +62,27 @@ function ListPage({ title, fetchData, searchableFields = [], sortableFields = []
   const toggleExpanded = async (item) => {
     if (!(isPost || isAlbum)) return; // רק Posts/Albums פתוחים
     setExpandedItems(prev => ({ ...prev, [item.id]: !prev[item.id] }));
- //צריך לסדר את זה שיגש לשרת נכון
+    //צריך לסדר את זה שיגש לשרת נכון
     if (isAlbum && !photos[item.id]) {
       const res = await fetch(`https://jsonplaceholder.typicode.com/photos?albumId=${item.id}`);
       const data = await res.json();
       setPhotos(prev => ({ ...prev, [item.id]: data }));
     }
   };
+
+  const handleDelete = async (id) => {
+    try {
+      await deleteData("todos", id);
+      const updatedTodos = await selectTodos();  // להביא את הרשימה המעודכנת
+      setFiltered(updatedTodos);
+      setItems(updatedTodos);
+    } catch (error) {
+      console.error("Error deleting todo:", error);
+    }
+
+  }
+
+  
 
   return (
     <div>
@@ -103,52 +120,62 @@ function ListPage({ title, fetchData, searchableFields = [], sortableFields = []
       </div>
 
       {/* רשימה */}
-      <ul>
-        {filtered.length > 0 ? (
-          filtered.map(item => (
-            <li key={item.id} style={{ marginBottom: "8px" }}>
-              <div style={{ display: "flex", alignItems: "center", cursor: isPost || isAlbum ? "pointer" : "default" }}
-                   onClick={() => toggleExpanded(item)}>
-                {isTodo && (
-                  <input
-                    type="checkbox"
-                    checked={item.completed}
-                    onChange={e => { e.stopPropagation(); toggleCompleted(item); }}
-                    style={{ marginRight: "8px" }}
-                  />
-                )}
-                <strong>{item.id}</strong> - {item.title}
-              </div>
+<ul>
+  {filtered.length > 0 ? (
+    filtered.map(item => (
+      <li key={item.id} style={{ marginBottom: "8px" }}>
+        <div style={{ display: "flex", alignItems: "center", cursor: isPost || isAlbum ? "pointer" : "default" }}
+          onClick={() => toggleExpanded(item)}>
+          {isTodo && (
+            <input
+              type="checkbox"
+              checked={item.completed}
+              onChange={e => { e.stopPropagation(); toggleCompleted(item); }}
+              style={{ marginRight: "8px" }}
+            />
+          )}
+          <strong>{item.id}</strong> - {item.title}
 
-              {expandedItems[item.id] && (
-                <div style={{ paddingLeft: "24px", marginTop: "4px" }}>
-                  {isPost && (
-                    <div>
-                      <p><strong>Content:</strong> {item.body}</p>
-                      {/* אפשר להוסיף comments כאן */}
-                    </div>
-                  )}
-                  {isAlbum && (
-                    <div>
-                      {photos[item.id] ? (
-                        <div style={{ display: "flex", flexWrap: "wrap", gap: "8px" }}>
-                          {photos[item.id].map(p => (
-                            <img key={p.id} src={p.thumbnailUrl} alt={p.title} style={{ width: "100px" }} />
-                          ))}
-                        </div>
-                      ) : (
-                        <p>Loading photos...</p>
-                      )}
-                    </div>
-                  )}
-                </div>
-              )}
-            </li>
-          ))
-        ) : (
-          <li>אין תוצאות</li>
+          {/* כפתור מחיקה */}
+          {isTodo && (
+            <button
+              onClick={e => { e.stopPropagation(); handleDelete(item.id); }}
+              style={{ marginLeft: "auto", backgroundColor: "red", color: "white", border: "none", padding: "4px 8px", cursor: "pointer" }}
+            >
+              מחק
+            </button>
+          )}
+        </div>
+
+        {expandedItems[item.id] && (
+          <div style={{ paddingLeft: "24px", marginTop: "4px" }}>
+            {isPost && (
+              <div>
+                <p><strong>Content:</strong> {item.body}</p>
+              </div>
+            )}
+            {isAlbum && (
+              <div>
+                {photos[item.id] ? (
+                  <div style={{ display: "flex", flexWrap: "wrap", gap: "8px" }}>
+                    {photos[item.id].map(p => (
+                      <img key={p.id} src={p.thumbnailUrl} alt={p.title} style={{ width: "100px" }} />
+                    ))}
+                  </div>
+                ) : (
+                  <p>Loading photos...</p>
+                )}
+              </div>
+            )}
+          </div>
         )}
-      </ul>
+      </li>
+    ))
+  ) : (
+    <li>אין תוצאות</li>
+  )}
+</ul>
+
     </div>
   );
 }

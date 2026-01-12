@@ -40,6 +40,21 @@ export async function toggleCompleted(todo) {
     }
 }
 
+export async function deleteData(type, id) {
+    try {
+        const res = await fetch(`http://localhost:3000/${type}/${id}`, {
+            method: "DELETE",
+        }); 
+        if (!res.ok) {
+            throw new Error("Network response was not ok");
+        }  
+        return true;
+    } catch (error) {
+        console.error("Error deleting data:", error);
+        throw error;
+    }    
+}
+
 
 
 
