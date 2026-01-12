@@ -9,8 +9,16 @@ import Todos from "./components/Todos";
 import Posts from "./components/Posts";
 import Albums from "./components/Albums";
 
-function App() {
+// קומפוננטה שתגן על Routes
+function PrivateRoute({ user, children }) {
+  if (!user) {
+    // אם המשתמש לא מחובר – נשלח אותו ללוגין
+    return <Navigate to="/login" replace />;
+  }
+  return children;
+}
 
+function App() {
   const [user, setUser] = useState(null);
   const [loading, setLoading] = useState(true);
 
@@ -26,24 +34,29 @@ function App() {
 
   return (
     <Routes>
-      <Route
-        path="/"
-        element={user ? <Navigate to="/home" /> : <Login onLogin={setUser} />}
-      />
-      <Route
-        path="/register"
-        element={user ? <Navigate to="/home" /> : <Register />}
-      />
+      <Route path="/login" element={<Login onLogin={setUser} />} />
+      <Route path="/register" element={<Register />} />
       <Route
         path="/complete-profile"
-        element={user ? <Navigate to="/home" /> : <CompleteProfile setUser={setUser} />}
+        element={<CompleteProfile setUser={setUser} />}
       />
+
+
       <Route
-        path="/home"
-        element={user ? <Home user={user} /> : <Navigate to="/" />}
-      />
+        path="/"
+        element={
+          <PrivateRoute user={user}>
+            <Home user={user} />
+          </PrivateRoute>
+        }
+      >
+        <Route path="info" element={<Info />} />
+        <Route path="todos" element={<Todos />} />
+        <Route path="posts" element={<Posts />} />
+        <Route path="albums" element={<Albums />} />
+      </Route>
+      <Route path="*" element={<Navigate to="/login" replace />} />
     </Routes>
-  
   );
 }
 

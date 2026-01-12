@@ -1,4 +1,16 @@
+import ListPage from "../components/ListPage";
+import { getPosts } from "../api/api";
+
 function Posts() {
-  return <div>עמוד פוסטים</div>;
+  return (
+    <ListPage
+      title="Posts"
+      fetchData={getPosts}
+      searchableFields={["id", "title"]}
+      sortableFields={["id", "title"]}
+      showCompleted={false}
+    />
+  );
 }
+
 export default Posts;

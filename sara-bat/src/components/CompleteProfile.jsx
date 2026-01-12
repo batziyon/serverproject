@@ -5,14 +5,13 @@ import { createUser } from "../api/api";
 function CompleteProfile({ setUser }) {
   const location = useLocation();
   const navigate = useNavigate();
-
   const { username, password } = location.state || {};
 
   const [profile, setProfile] = useState({
     name: username || "",
     email: "",
     phone: "",
-    website: password || "",
+    website: password || "", 
     street: "",
     suite: "",
     city: "",
@@ -32,8 +31,9 @@ function CompleteProfile({ setUser }) {
     e.preventDefault();
 
     const newUser = {
+      username,          
+      password,          
       name: profile.name,
-      username,
       email: profile.email,
       phone: profile.phone,
       website: profile.website,
@@ -50,21 +50,23 @@ function CompleteProfile({ setUser }) {
         bs: profile.bs
       }
     };
-   
 
     try {
       const savedUser = await createUser(newUser);
 
+      // שמירה ב־localStorage ועדכון state של App
       localStorage.setItem("currentUser", JSON.stringify(savedUser));
       setUser(savedUser);
-      alert("ההרשמה הושלמה בהצלחה!");
-      navigate("/home");
 
+      alert("ההרשמה הושלמה בהצלחה!");
+      navigate("/"); // נווט לדף הבית
     } catch (err) {
+      console.error(err);
       alert(err.message);
     }
   };
 
+  // JSX של הטופס
   return (
     <form onSubmit={handleSubmit}>
       <h2>השלמת פרטים</h2>
@@ -72,8 +74,20 @@ function CompleteProfile({ setUser }) {
       <input name="name" value={profile.name} readOnly />
       <input name="website" value={profile.website} readOnly />
 
-      <input name="email" placeholder="אימייל" value={profile.email} onChange={handleChange} required />
-      <input name="phone" placeholder="טלפון" value={profile.phone} onChange={handleChange} required />
+      <input
+        name="email"
+        placeholder="אימייל"
+        value={profile.email}
+        onChange={handleChange}
+        required
+      />
+      <input
+        name="phone"
+        placeholder="טלפון"
+        value={profile.phone}
+        onChange={handleChange}
+        required
+      />
 
       <h4>כתובת</h4>
       <input name="street" placeholder="רחוב" value={profile.street} onChange={handleChange} />

@@ -19,64 +19,59 @@ function Register() {
   const handleSubmit = async (e) => {
     e.preventDefault();
 
-
     if (formData.password !== formData.verifyPassword) {
       alert("הסיסמאות לא תואמות");
       return;
     }
-      try {
-        const newUser = await signUp(formData.name, formData.password);
 
-        const authUser = {
-          id: newUser.id,
-          username: newUser.username
-        };
+    try {
+      await signUp(formData.name); // בודקים אם שם משתמש פנוי
 
-        localStorage.setItem("currentUser", JSON.stringify(authUser));
+      // משתמש חדש עדיין לא נוצר, אבל אפשר לשלוח את הנתונים להמשך
+      navigate("/complete-profile", {
+        state: {
+          username: formData.name,
+          password: formData.password
+        }
+      });
 
-        navigate("/complete-profile", {
-          state: {
-            id: newUser.id,
-            username: newUser.username
-          }
-        });
+    } catch (error) {
+      alert(error.message);
+    }
+  };
 
-      } catch (error) {
-        alert(error.message);
-      }
-    };
 
-    return (
-      <form onSubmit={handleSubmit}>
-        <input
-          name="name"
-          placeholder="name"
-          value={formData.name}
-          onChange={handleChange}
-          required
-        />
+  return (
+    <form onSubmit={handleSubmit}>
+      <input
+        name="name"
+        placeholder="name"
+        value={formData.name}
+        onChange={handleChange}
+        required
+      />
 
-        <input
-          type="password"
-          name="password"
-          placeholder="password"
-          value={formData.password}
-          onChange={handleChange}
-          required
-        />
+      <input
+        type="password"
+        name="password"
+        placeholder="password"
+        value={formData.password}
+        onChange={handleChange}
+        required
+      />
 
-        <input
-          type="password"
-          name="verifyPassword"
-          placeholder="verify password"
-          value={formData.verifyPassword}
-          onChange={handleChange}
-          required
-        />
+      <input
+        type="password"
+        name="verifyPassword"
+        placeholder="verify password"
+        value={formData.verifyPassword}
+        onChange={handleChange}
+        required
+      />
 
-        <button type="submit">register</button>
-      </form>
-    );
-  }
+      <button type="submit">register</button>
+    </form>
+  );
+}
 
-  export default Register;
+export default Register;

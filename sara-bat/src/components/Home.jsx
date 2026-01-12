@@ -4,14 +4,14 @@ function Home({ user }) {
   const navigate = useNavigate();
 
   const handleLogout = () => {
-    localStorage.clear(); // אם שמרת משתמש
+    localStorage.clear();
     navigate("/login");
   };
 
   return (
     <div>
       <header>
-        <h1>{user.fullName}</h1>
+        <h1>{user.username}</h1>
       </header>
 
       <nav>

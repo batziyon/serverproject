@@ -1,8 +1,8 @@
 export async function selectTodos() {
-    localStorage.setItem(
-        "currentUser",
-        JSON.stringify({ id: 2, fullName: "משתמש לדוגמה" })
-    );
+    // localStorage.setItem(
+    //     "currentUser",
+    //     JSON.stringify({ id: 2, fullName: "משתמש לדוגמה" })
+    // );
     const savedUser = localStorage.getItem("currentUser");
     const currentUser = savedUser ? JSON.parse(savedUser) : null;
     try {

@@ -33,7 +33,7 @@ function Login({ onLogin }) {
 
       localStorage.setItem("currentUser", JSON.stringify(authUser));
       onLogin(authUser);
-      navigate("/home");
+      navigate("/");
 
     } catch (err) {
       alert(err.message);
@@ -62,8 +62,8 @@ function Login({ onLogin }) {
       <button type="submit">Login</button>
 
       <p>
-        לא רשומה?
-        <Link to="/register"> הרשמי כאן</Link>
+        לא רשום?
+        <Link to="/register"> הרשם כאן</Link>
       </p>
     </form>
   );
