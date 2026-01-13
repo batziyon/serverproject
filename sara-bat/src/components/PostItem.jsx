@@ -1,6 +1,6 @@
 import { useState } from "react";
 
-function PostItem({ item, onDelete }) {
+function PostItem({ item, onDelete, onChange }) {
   const [open, setOpen] = useState(false);
 
   return (
@@ -13,7 +13,7 @@ function PostItem({ item, onDelete }) {
       </div>
 
       <button onClick={() => onDelete(item.id)}>מחק</button>
-
+      <button onClick={() => onChange(item.id)}>עידכון</button>
       {open && (
         <p style={{ marginTop: 8 }}>
           {item.body}

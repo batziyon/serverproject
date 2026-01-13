@@ -1,8 +1,9 @@
 import { useState } from "react";
-import { getData } from "../api/api";
+
+import { getData,deleteData } from "../api/api";
 
 export function useAlbumPhotos() {
-  const [photos, setPhotos] = useState({});
+  const [photos, setPhotos] = useState([]);
   const [pages, setPages] = useState({});
 
   const loadInitial = async (albumId) => {
@@ -10,6 +11,12 @@ export function useAlbumPhotos() {
     setPhotos(prev => ({ ...prev, [albumId]: data }));
     setPages(prev => ({ ...prev, [albumId]: 1 }));
   };
+
+  // const handleDelete = async (id) => {
+  //   await deleteData("albums", id);
+  //   setPhotos(prev => prev.filter(i => i.id !== id));
+  //   setPages(prev => prev.filter(i => i.id !== id));
+  // };
 
   const loadMore = async (albumId) => {
     const next = (pages[albumId] || 1) + 1;

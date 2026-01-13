@@ -7,11 +7,16 @@ export default function PostsPage() {
     <ListPage
       title="Posts"
       fetchData={getPosts}
-      searchableFields={["id", "title"]}
+      searchableFields={["all","id", "title"]}
       sortableFields={["id", "title"]}
-      renderItem={(item, onDelete) => (
-        <PostItem item={item} onDelete={onDelete} />
+        option={[]}
+      renderItem={(item, onDelete, change) => (
+        <PostItem
+         item={item} 
+         onDelete={onDelete} 
+         onChange={change} />
       )}
+      showExtraSearchButton={false}
     />
   );
 }

@@ -5,26 +5,15 @@ import { getAlbums } from "../api/api";
 export default function AlbumsPage() {
   return (
     <ListPage
-      title="Albums"               // 🔹 שם הרשימה שמופיע בכותרת הדף.
-                                   // שימושי גם כדי לשלוח את סוג הנתונים לפונקציית המחיקה (deleteData).
-
-      fetchData={getAlbums}       // 🔹 פונקציה שמביאה את הנתונים מהשרת (API) או ממקור כלשהו.
-                                   // ListPage קוראת לה בתוך useEffect כדי למלא את ה-state הראשי של הפריטים.
-
-      searchableFields={["id", "title"]} // 🔹 רשימת השדות בהם המשתמש יכול לחפש.
-                                           // בדף זה, ניתן לחפש לפי מזהה או שם האלבום.
-                                           // ListPage משתמש בזה כדי ליצור dropdown ולסנן את הרשימה.
-
-      sortableFields={["id", "title"]}   // 🔹 רשימת השדות שניתן למיין על פיהם.
-                                          // ListPage יוצרת dropdown שמאפשר למיין את הרשימה לפי השדות הללו.
-
-      renderItem={(item, onDelete) => (  // 🔹 פונקציה שמגדירה איך להציג כל פריט ברשימה.
-                                          // item → האובייקט עצמו (כל אלבום).
-                                          // onDelete → פונקציה שמגיעה מ־ListPage ומבצעת מחיקה.
-        <AlbumItem item={item} onDelete={onDelete} /> 
-        // 🔹 AlbumItem הוא הקומפוננטה שמציגה את כל פרטי האלבום.
-        // קבלת הפריט והפונקציה onDelete כדי שהמשתמש יוכל למחוק פריט בלחיצה.
+      title="Albums"
+      fetchData={getAlbums}
+      searchableFields={["all", "id", "title"]}
+      sortableFields={["id", "title"]}
+      option={[]}
+      renderItem={(item, onDelete) => (
+        <AlbumItem item={item} onDelete={onDelete} />
       )}
+      showExtraSearchButton={false}
     />
   );
 }

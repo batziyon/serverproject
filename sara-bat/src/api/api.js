@@ -218,6 +218,7 @@ export async function getData(id, page = 1, limit = 10) {
 
 export async function deleteData(type, id) {
     try {
+      
         const res = await fetch(`http://localhost:3000/${type}/${id}`, {
             method: "DELETE",
         }); 
@@ -231,8 +232,21 @@ export async function deleteData(type, id) {
     }    
 }
 
-
-
-
-
-
+export async function updateData(type, id, data) {
+    try {
+        const res = await fetch(`http://localhost:3000/${type}/${id}`, {
+            method: "PUT",
+            headers: {
+                "Content-Type": "application/json",
+            },
+            body: JSON.stringify(data),
+        });
+        if (!res.ok) {
+            throw new Error("Network response was not ok");
+        }
+        return await res.json();
+    } catch (error) {
+        console.error("Error updating data:", error);
+        throw error;
+    }
+}

@@ -1,5 +1,6 @@
 import { useEffect, useState } from "react";
-import { deleteData, toggleCompleted } from "../api/api";
+// import { handleDelete } from "../hooks/useListPage"
+import { toggleCompleted,updateData ,deleteData} from "../api/api";
 
 function ListPage({
   title,
@@ -7,6 +8,8 @@ function ListPage({
   searchableFields = [],
   sortableFields = [],
   renderItem,
+  showExtraSearchButton,
+  option,
 }) {
   const [items, setItems] = useState([]);
   const [filtered, setFiltered] = useState([]);
@@ -22,7 +25,11 @@ function ListPage({
     load();
   }, [fetchData]);
 
-  const handleSearch = () => {
+  useEffect(() => {
+    if (searchField === "all") {
+      setFiltered(items);
+      return;
+    }
     setFiltered(
       items.filter(item =>
         String(item[searchField])
@@ -30,7 +37,8 @@ function ListPage({
           .includes(searchValue.toLowerCase())
       )
     );
-  };
+
+  }, [searchValue, searchField, items]);
 
   const handleSort = (field) => {
     setFiltered([...filtered].sort((a, b) =>
@@ -38,11 +46,7 @@ function ListPage({
     ));
   };
 
-  const handleDelete = async (id) => {
-    await deleteData(title.toLowerCase(), id);
-    setItems(prev => prev.filter(i => i.id !== id));
-    setFiltered(prev => prev.filter(i => i.id !== id));
-  };
+
 
   const handleToggle = async (todo) => {
     const updated = await toggleCompleted(todo);
@@ -60,13 +64,39 @@ function ListPage({
     );
   };
 
+  const handleExstraSearch = (completed) => {
+
+    if (completed === "all") {
+      setFiltered(items)
+      return
+    }
+    if (completed === "done")
+      completed = true
+    else
+      completed = false;
+    setFiltered(
+      items.filter(item =>
+        item["completed"] === completed
+      )
+    );
+  }
+  const handleDelete = async (id) => {
+    await deleteData(title.toLowerCase(), id);
+    setItems(prev => prev.filter(i => i.id !== id));
+    setFiltered(prev => prev.filter(i => i.id !== id));
+  };
+  const handleUpdate = async (id) => {
+    await updateData(title.toLowerCase(), id,"{title: 'updated title'} );");
+    
+  };
   return (
     <div>
       <h2>{title}</h2>
 
       <select onChange={e => setSearchField(e.target.value)}>
-        {searchableFields.map(f => (
-          <option key={f} value={f}>{f}</option>
+
+        {searchableFields.map(fields => (
+          <option key={fields} value={fields}>{fields}</option>
         ))}
       </select>
 
@@ -75,22 +105,32 @@ function ListPage({
         onChange={e => setSearchValue(e.target.value)}
         placeholder="חיפוש..."
       />
-      <button onClick={handleSearch}>חפש</button>
+
+      {showExtraSearchButton &&
+        <select onChange={e => handleExstraSearch(e.target.value)}>
+
+          {option.map(f => (
+            <option key={f} value={f}>{f}</option>
+          ))}
+        </select>
+      }
 
       <select onChange={e => handleSort(e.target.value)}>
-        {sortableFields.map(f => (
-          <option key={f} value={f}>{f}</option>
+        {sortableFields.map(fields => (
+          <option key={fields} value={fields}>{fields}</option>
         ))}
       </select>
+
+      {!filtered.length && <h2>אין תוצאות</h2>}
 
       <ul>
         {filtered.map(item => (
           <li key={item.id}>
-            {renderItem(item, handleDelete, handleToggle)}
+            {renderItem(item, handleDelete, handleToggle,)}
           </li>
         ))}
       </ul>
-    </div>
+    </div >
   );
 }
 

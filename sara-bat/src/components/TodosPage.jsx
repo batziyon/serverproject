@@ -7,15 +7,18 @@ export default function TodosPage() {
     <ListPage
       title="Todos"
       fetchData={getTodos}
-      searchableFields={["id", "title"]}
+      searchableFields={["all","id", "title"]}
       sortableFields={["id", "title"]}
-      renderItem={(item, del, toggle) => (
+      option={["all","done", "not done"]}
+      renderItem={(item, del, toggle, change) => (
         <TodoItem
           item={item}
           onDelete={del}
           onToggle={toggle}
+          onChange={change}
         />
       )}
+      showExtraSearchButton={true}
     />
   );
 }
