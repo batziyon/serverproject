@@ -1,4 +1,3 @@
-
 import { useState } from "react";
 import { useNavigate } from "react-router-dom";
 import { signUp } from "../api/api";
@@ -6,7 +5,7 @@ import { signUp } from "../api/api";
 function Register() {
   const navigate = useNavigate();
   const [formData, setFormData] = useState({
-    name: "",
+    username: "",
     password: "",
     verifyPassword: ""
   });
@@ -25,28 +24,25 @@ function Register() {
     }
 
     try {
-      await signUp(formData.name); // בודקים אם שם משתמש פנוי
+      await signUp(formData.username);
 
-      // משתמש חדש עדיין לא נוצר, אבל אפשר לשלוח את הנתונים להמשך
       navigate("/complete-profile", {
         state: {
-          username: formData.name,
+          username: formData.username,
           password: formData.password
         }
       });
-
-    } catch (error) {
-      alert(error.message);
+    } catch (err) {
+      alert(err.message);
     }
   };
-
 
   return (
     <form onSubmit={handleSubmit}>
       <input
-        name="name"
-        placeholder="name"
-        value={formData.name}
+        name="username"
+        placeholder="username"
+        value={formData.username}
         onChange={handleChange}
         required
       />
@@ -69,7 +65,7 @@ function Register() {
         required
       />
 
-      <button type="submit">register</button>
+      <button type="submit">Register</button>
     </form>
   );
 }

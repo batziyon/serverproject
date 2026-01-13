@@ -54,27 +54,27 @@ export async function createUser(user) {
 }
 
 
-export async function selectTodos() {
-  // localStorage.setItem(
-  //     "currentUser",
-  //     JSON.stringify({ id: 2, fullName: "משתמש לדוגמה" })
-  // );
-  const savedUser = localStorage.getItem("currentUser");
-  const currentUser = savedUser ? JSON.parse(savedUser) : null;
-  try {
-    const res = await fetch(
-      `http://localhost:3000/todos?userId=${currentUser.id}`
-    );
-    if (!res.ok) {
-      throw new Error("Network response was not ok");
-    }
-    const data = res.json();
-    return data;
-  } catch (error) {
-    console.error("Error fetching todos:", error);
-    return [];
-  }
-}
+// export async function selectTodos() {
+//   // localStorage.setItem(
+//   //     "currentUser",
+//   //     JSON.stringify({ id: 2, fullName: "משתמש לדוגמה" })
+//   // );
+//   const savedUser = localStorage.getItem("currentUser");
+//   const currentUser = savedUser ? JSON.parse(savedUser) : null;
+//   try {
+//     const res = await fetch(
+//       `http://localhost:3000/todos?userId=${currentUser.id}`
+//     );
+//     if (!res.ok) {
+//       throw new Error("Network response was not ok");
+//     }
+//     const data = res.json();
+//     return data;
+//   } catch (error) {
+//     console.error("Error fetching todos:", error);
+//     return [];
+//   }
+// }
 
 export async function toggleCompleted(todo) {
   const updatedTodo = { ...todo, completed: !todo.completed };
@@ -107,25 +107,131 @@ export async function fetchUserData(endpoint) {
     if (!res.ok) throw new Error("Network response was not ok");
 
     const data = await res.json();
-    return data;
+    return data; 
   } catch (error) {
     console.error(`Error fetching ${endpoint}:`, error);
-    return [];
+    return []; // <--- תיקון: מחזירים מערך ריק במקרה שגיאה ולא כלום
   }
 }
 
 export async function getPosts() {
-  return fetchUserData("posts"); // שולף את הפוסטים של המשתמש הנוכחי
+  return fetchUserData("posts"); 
 }
 
 export async function getTodos() {
-  return fetchUserData("todos"); // שולף את ה־todos של המשתמש הנוכחי
+  return fetchUserData("todos"); 
 }
 
 export async function getAlbums() {
-  const res = await fetch("https://jsonplaceholder.typicode.com/albums");
-  return await res.json();
+  return fetchUserData("albums"); 
 }
+
+
+// export async function UpdateMarker(id, completed) {
+//   try {
+//     const res = await fetch(`http://localhost:3000/todos/${id}`, {
+//       method: "PATCH",
+//       headers: {
+//         "Content-Type": "application/json",
+//       },
+//       body: JSON.stringify({ completed }),
+//     });
+//   } catch (error) {
+//     console.error("Error updating todo:", error);
+//     throw error;
+//   }
+// }
+// בקובץ api/api.js
+
+// בקובץ api/api.js
+
+export async function getData(id, page = 1, limit = 10) {
+  try {
+  
+    const res = await fetch(`https://jsonplaceholder.typicode.com/photos?albums=${id}&_page=${page}&_limit=${limit}`);
+    
+    if (!res.ok) throw new Error("Network response was not ok");
+
+    const data = await res.json();
+    return data; 
+  } catch (error) {
+    console.error(`Error fetching photos for album ${id}:`, error);
+    return []; 
+  }
+
+}
+
+// api/api.js
+// export async function getPhotos(albumId, page = 1, limit = 10) {
+//   try {
+//     const res = await fetch(`https://jsonplaceholder.typicode.com/photos?albumId=${albumId}&_page=${page}&_limit=${limit}`);
+//     if (!res.ok) throw new Error("Failed to fetch photos");
+//     return await res.json();
+//   } catch (error) {
+//     console.error(error);
+//     return [];
+//   }
+// }
+
+// ושאר הפונקציות שלך (getAlbums, deleteData...)
+// export async function selectTodos() {
+//     // localStorage.setItem(
+//     //     "currentUser",
+//     //     JSON.stringify({ id: 2, fullName: "משתמש לדוגמה" })
+//     // );
+//     const savedUser = localStorage.getItem("currentUser");
+//     const currentUser = savedUser ? JSON.parse(savedUser) : null;
+//     try {
+//         const res = await fetch(
+//             `http://localhost:3000/todos?userId=${currentUser.id}`
+//         );
+//         if (!res.ok) {
+//             throw new Error("Network response was not ok");
+//         }
+//         const data = res.json();
+//         return data;
+//     } catch (error) {
+//         console.error("Error fetching todos:", error);
+//         return [];
+//     }
+// }
+
+// export async function toggleCompleted(todo) {
+//     const updatedTodo = { ...todo, completed: !todo.completed };
+//     try {
+//         const res = await fetch(`http://localhost:3000/todos/${todo.id}`, {
+//             method: "PATCH",
+//             headers: {
+//                 "Content-Type": "application/json",
+//             },
+//             body: JSON.stringify({ completed: updatedTodo.completed }),
+//         });
+//         if (!res.ok) {
+//             throw new Error("Network response was not ok");
+//         }
+//         return await res.json();
+//     } catch (error) {
+//         console.error("Error updating todo:", error);
+//         throw error;
+//     }
+// }
+
+export async function deleteData(type, id) {
+    try {
+        const res = await fetch(`http://localhost:3000/${type}/${id}`, {
+            method: "DELETE",
+        }); 
+        if (!res.ok) {
+            throw new Error("Network response was not ok");
+        }  
+        return true;
+    } catch (error) {
+        console.error("Error deleting data:", error);
+        throw error;
+    }    
+}
+
+
 
 
 

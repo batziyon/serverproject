@@ -1,16 +1,17 @@
 import ListPage from "../components/ListPage";
+import PostItem from "../components/PostItem";
 import { getPosts } from "../api/api";
 
-function Posts() {
+export default function PostsPage() {
   return (
     <ListPage
       title="Posts"
       fetchData={getPosts}
       searchableFields={["id", "title"]}
       sortableFields={["id", "title"]}
-      showCompleted={false}
+      renderItem={(item, onDelete) => (
+        <PostItem item={item} onDelete={onDelete} />
+      )}
     />
   );
 }
-
-export default Posts;

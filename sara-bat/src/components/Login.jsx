@@ -4,9 +4,8 @@ import { login } from "../api/api";
 
 function Login({ onLogin }) {
   const navigate = useNavigate();
-
   const [formData, setFormData] = useState({
-    name: "",
+    username: "",
     password: ""
   });
 
@@ -15,11 +14,11 @@ function Login({ onLogin }) {
     setFormData(prev => ({ ...prev, [name]: value }));
   };
 
-  const handleLogin = async (e) => {
+  const handleSubmit = async (e) => {
     e.preventDefault();
 
     try {
-      const user = await login(formData.name, formData.password);
+      const user = await login(formData.username, formData.password);
 
       if (!user) {
         alert("שם משתמש או סיסמה שגויים");
@@ -41,18 +40,18 @@ function Login({ onLogin }) {
   };
 
   return (
-    <form onSubmit={handleLogin}>
+    <form onSubmit={handleSubmit}>
       <input
-        name="name"
-        placeholder="name"
-        value={formData.name}
+        name="username"
+        placeholder="username"
+        value={formData.username}
         onChange={handleChange}
         required
       />
 
       <input
-        name="password"
         type="password"
+        name="password"
         placeholder="password"
         value={formData.password}
         onChange={handleChange}

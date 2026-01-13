@@ -1,18 +1,19 @@
 import { Routes, Route, Navigate } from "react-router-dom";
 import { useState, useEffect } from "react";
+
 import Login from "./components/Login";
 import Register from "./components/Register";
-import Home from "./components/Home";
 import CompleteProfile from "./components/CompleteProfile";
+import Home from "./components/Home";
 import Info from "./components/Info";
-import Todos from "./components/Todos";
-import Posts from "./components/Posts";
-import Albums from "./components/Albums";
 
-// קומפוננטה שתגן על Routes
+import TodosPage from "./components/TodosPage";
+import PostsPage from "./components/PostsPage";  
+import AlbumsPage from "./components/AlbumsPage";
+
+// Route מוגן
 function PrivateRoute({ user, children }) {
   if (!user) {
-    // אם המשתמש לא מחובר – נשלח אותו ללוגין
     return <Navigate to="/login" replace />;
   }
   return children;
@@ -30,10 +31,13 @@ function App() {
     setLoading(false);
   }, []);
 
-  if (loading) return <p>טוען...</p>;
+  if (loading) {
+    return <div>טוען...</div>;
+  }
 
   return (
     <Routes>
+      {/* ציבורי */}
       <Route path="/login" element={<Login onLogin={setUser} />} />
       <Route path="/register" element={<Register />} />
       <Route
@@ -41,7 +45,7 @@ function App() {
         element={<CompleteProfile setUser={setUser} />}
       />
 
-
+      {/* מוגן */}
       <Route
         path="/"
         element={
@@ -50,11 +54,14 @@ function App() {
           </PrivateRoute>
         }
       >
+        <Route index element={<Info />} />
         <Route path="info" element={<Info />} />
-        <Route path="todos" element={<Todos />} />
-        <Route path="posts" element={<Posts />} />
-        <Route path="albums" element={<Albums />} />
+        <Route path="todos" element={<TodosPage />} />
+        <Route path="posts" element={<PostsPage />} />   {/* ✅ עובד */}
+        <Route path="albums" element={<AlbumsPage />} />
       </Route>
+
+      {/* fallback */}
       <Route path="*" element={<Navigate to="/login" replace />} />
     </Routes>
   );
