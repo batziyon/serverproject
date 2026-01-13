@@ -1,39 +1,60 @@
 import { useState } from "react";
-// import {handleDelete} from "../hooks/useListPage"
+import PhotoItem from "./PhotoItem";
 import { useAlbumPhotos } from "./useAlbumPhotos";
 
-function AlbumItem({ item, onDelete, onChange }) {
+function AlbumItem({ album, onDelete, onUpdate }) {
+  const [title, setTitle] = useState(album.title);
+  const [isEditing, setIsEditing] = useState(false);
   const [open, setOpen] = useState(false);
-  const { photos, loadInitial, loadMore, handleDelete } = useAlbumPhotos();
 
-  const toggle = () => {
-    setOpen(!open);
-    if (!photos[item.id]) {
-      loadInitial(item.id);
-    }
+  const { photos, loadInitial, deletePhoto, updatePhoto } = useAlbumPhotos();
+
+  const handleSave = () => {
+    onUpdate(album.id, { title });
+    setIsEditing(false);
+  };
+
+  const togglePhotos = () => {
+    setOpen(prev => !prev);
+    if (!photos[album.id]) loadInitial(album.id);
   };
 
   return (
-    <div>
-      <strong onClick={toggle}>{item.id}-{item.title}</strong>
-      <button onClick={() => onDelete(item.id)}>מחק</button>
-      <button onClick={() => onChange(item.id)}>עידכון</button>
+    <div style={{ border: "1px solid #aaa", padding: 8, marginBottom: 8 }}>
+      <div style={{ display: "flex", justifyContent: "space-between", alignItems: "center" }}>
+        {isEditing ? (
+          <input value={title} onChange={e => setTitle(e.target.value)} />
+        ) : (
+          <strong>{title}</strong>
+        )}
+        <div style={{ display: "flex", gap: 8 }}>
+          {!isEditing ? (
+            <>
+              <button onClick={() => setIsEditing(true)}>עדכן אלבום</button>
+              <button onClick={() => onDelete(album.id)}>מחק אלבום</button>
+              <button onClick={togglePhotos}>{open ? "סגור תמונות" : "פתח תמונות"}</button>
+            </>
+          ) : (
+            <>
+              <button onClick={handleSave}>שמור</button>
+              <button onClick={() => { setIsEditing(false); setTitle(album.title); }}>ביטול</button>
+            </>
+          )}
+        </div>
+      </div>
 
-      {open && photos[item.id] && (
-        <>
-          <div style={{ display: "flex", gap: 8 }}>
-            {photos[item.id].map(p => (
-              <div> <img key={p.id} src={p.thumbnailUrl} />
-                <button onClick={() => handleDelete(item.id)}>   מחק </button>
-
-              </div>
-            ))}
-          </div>
-          <button onClick={() => loadMore(item.id)}>
-            טען עוד
-          </button>
-
-        </>
+      {open && photos[album.id] && (
+        <div style={{ display: "flex", flexWrap: "wrap", gap: 8, marginTop: 8 }}>
+          {photos[album.id].map(photo => (
+            <PhotoItem
+              key={photo.id}
+              albumId={album.id}
+              photo={photo}
+              onDelete={deletePhoto}
+              onUpdate={updatePhoto}
+            />
+          ))}
+        </div>
       )}
     </div>
   );

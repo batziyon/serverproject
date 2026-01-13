@@ -3,20 +3,30 @@ import PostItem from "../components/PostItem";
 import { getPosts } from "../api/api";
 
 export default function PostsPage() {
+  const updatePost = (item, newTitle, newBody) => ({
+    id: item.id,
+    userId: item.userId,
+    title: newTitle,
+    body: newBody
+  });
+
   return (
     <ListPage
       title="Posts"
       fetchData={getPosts}
-      searchableFields={["all","id", "title"]}
+      searchableFields={["all", "id", "title"]}
       sortableFields={["id", "title"]}
-        option={[]}
-      renderItem={(item, onDelete, change) => (
+      option={[]}
+      onUpdate={updatePost}
+      renderItem={(item, onDelete, toggle, update) => (
         <PostItem
-         item={item} 
-         onDelete={onDelete} 
-         onChange={change} />
+          item={item}
+          onDelete={onDelete}
+          onChange={update}
+        />
       )}
       showExtraSearchButton={false}
     />
   );
 }
+

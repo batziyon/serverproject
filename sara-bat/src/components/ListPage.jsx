@@ -1,6 +1,5 @@
 import { useEffect, useState } from "react";
-// import { handleDelete } from "../hooks/useListPage"
-import { toggleCompleted,updateData ,deleteData} from "../api/api";
+import { toggleCompleted, updateData, deleteData } from "../api/api";
 
 function ListPage({
   title,
@@ -10,6 +9,7 @@ function ListPage({
   renderItem,
   showExtraSearchButton,
   option,
+  onUpdate // חובה
 }) {
   const [items, setItems] = useState([]);
   const [filtered, setFiltered] = useState([]);
@@ -26,18 +26,12 @@ function ListPage({
   }, [fetchData]);
 
   useEffect(() => {
-    if (searchField === "all") {
-      setFiltered(items);
-      return;
-    }
-    setFiltered(
+    if (searchField === "all") setFiltered(items);
+    else setFiltered(
       items.filter(item =>
-        String(item[searchField])
-          .toLowerCase()
-          .includes(searchValue.toLowerCase())
+        String(item[searchField]).toLowerCase().includes(searchValue.toLowerCase())
       )
     );
-
   }, [searchValue, searchField, items]);
 
   const handleSort = (field) => {
@@ -46,79 +40,56 @@ function ListPage({
     ));
   };
 
+  const handleUpdate = async (...args) => {
+    const payload = onUpdate(...args);
+    const id = args[0].id;
 
+    const updated = await updateData(title.toLowerCase(), id, payload);
+
+    setItems(prev => prev.map(i => i.id === updated.id ? updated : i));
+    setFiltered(prev => prev.map(i => i.id === updated.id ? updated : i));
+  };
 
   const handleToggle = async (todo) => {
     const updated = await toggleCompleted(todo);
-
-    setItems(prev =>
-      prev.map(item =>
-        item.id === updated.id ? updated : item
-      )
-    );
-
-    setFiltered(prev =>
-      prev.map(item =>
-        item.id === updated.id ? updated : item
-      )
-    );
+    setItems(prev => prev.map(i => i.id === updated.id ? updated : i));
+    setFiltered(prev => prev.map(i => i.id === updated.id ? updated : i));
   };
 
-  const handleExstraSearch = (completed) => {
-
-    if (completed === "all") {
-      setFiltered(items)
-      return
-    }
-    if (completed === "done")
-      completed = true
-    else
-      completed = false;
-    setFiltered(
-      items.filter(item =>
-        item["completed"] === completed
-      )
-    );
-  }
   const handleDelete = async (id) => {
     await deleteData(title.toLowerCase(), id);
     setItems(prev => prev.filter(i => i.id !== id));
     setFiltered(prev => prev.filter(i => i.id !== id));
   };
-  const handleUpdate = async (id) => {
-    await updateData(title.toLowerCase(), id,"{title: 'updated title'} );");
-    
+
+  const handleExtraSearch = (completed) => {
+    if (completed === "all") return setFiltered(items);
+    const bool = completed === "done";
+    setFiltered(items.filter(item => item.completed === bool));
   };
+
   return (
     <div>
       <h2>{title}</h2>
 
       <select onChange={e => setSearchField(e.target.value)}>
-
-        {searchableFields.map(fields => (
-          <option key={fields} value={fields}>{fields}</option>
-        ))}
+        {searchableFields.map(f => <option key={f} value={f}>{f}</option>)}
       </select>
 
       <input
+        placeholder="חיפוש..."
         value={searchValue}
         onChange={e => setSearchValue(e.target.value)}
-        placeholder="חיפוש..."
       />
 
       {showExtraSearchButton &&
-        <select onChange={e => handleExstraSearch(e.target.value)}>
-
-          {option.map(f => (
-            <option key={f} value={f}>{f}</option>
-          ))}
+        <select onChange={e => handleExtraSearch(e.target.value)}>
+          {option.map(f => <option key={f} value={f}>{f}</option>)}
         </select>
       }
 
       <select onChange={e => handleSort(e.target.value)}>
-        {sortableFields.map(fields => (
-          <option key={fields} value={fields}>{fields}</option>
-        ))}
+        {sortableFields.map(f => <option key={f} value={f}>{f}</option>)}
       </select>
 
       {!filtered.length && <h2>אין תוצאות</h2>}
@@ -126,11 +97,11 @@ function ListPage({
       <ul>
         {filtered.map(item => (
           <li key={item.id}>
-            {renderItem(item, handleDelete, handleToggle,)}
+            {renderItem(item, handleDelete, handleToggle, handleUpdate)}
           </li>
         ))}
       </ul>
-    </div >
+    </div>
   );
 }
 
