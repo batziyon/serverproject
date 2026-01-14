@@ -8,8 +8,9 @@ import Home from "./components/Home";
 import Info from "./components/Info";
 
 import TodosPage from "./components/TodosPage";
-import PostsPage from "./components/PostsPage";  
+import PostsPage from "./components/PostsPage";
 import AlbumsPage from "./components/AlbumsPage";
+import PhotoItem from "./components/PhotoItem";
 
 // Route מוגן
 function PrivateRoute({ user, children }) {
@@ -46,7 +47,7 @@ function App() {
       />
 
       {/* מוגן */}
-      <Route
+      {/* <Route
         path="/"
         element={
           <PrivateRoute user={user}>
@@ -57,9 +58,35 @@ function App() {
         <Route index element={<Info />} />
         <Route path="info" element={<Info />} />
         <Route path="todos" element={<TodosPage />} />
-        <Route path="posts" element={<PostsPage />} />   {/* ✅ עובד */}
+        <Route path="posts" element={<PostsPage />} />  
         <Route path="albums" element={<AlbumsPage />} />
+      </Route> */}
+      <Route
+        path="/"
+        element={
+          <PrivateRoute user={user}>
+            <Home user={user} />
+          </PrivateRoute>
+        }
+      >
+        <Route index element={<Info />} />
+
+        <Route path="users/:userId">
+          <Route index element={<Info />} />
+
+          <Route path="todos" element={<TodosPage />} />
+          <Route path="posts" element={<PostsPage />} />
+
+          <Route path="albums">
+            <Route index element={<AlbumsPage />} />
+            <Route path=":albumId">
+              <Route index element={<AlbumsPage />} />
+              {<Route path="photos" element={<AlbumsPage />} />}
+            </Route>
+          </Route>
+        </Route>
       </Route>
+
 
       {/* fallback */}
       <Route path="*" element={<Navigate to="/login" replace />} />

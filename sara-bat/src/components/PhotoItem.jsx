@@ -1,6 +1,10 @@
 import { useState } from "react";
+import { useParams } from "react-router-dom";
 
 function PhotoItem({ item, onDelete, onChange }) {
+
+const { userId, albumId, photoId } = useParams();
+
   const [isEditing, setIsEditing] = useState(false);
   const [title, setTitle] = useState(item.title);
 

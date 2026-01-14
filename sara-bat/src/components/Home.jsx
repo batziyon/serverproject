@@ -15,11 +15,12 @@ function Home({ user }) {
       </header>
 
       <nav>
-        <NavLink to="/info">Info</NavLink> |{" "}
-        <NavLink to="/todos">Todos</NavLink> |{" "}
-        <NavLink to="/posts">Posts</NavLink> |{" "}
-        <NavLink to="/albums">Albums</NavLink> |{" "}
+        <NavLink to={`/users/${user.id}/info`}>Info</NavLink> |{" "}
+        <NavLink to={`/users/${user.id}/todos`}>Todos</NavLink> |{" "}
+        <NavLink to={`/users/${user.id}/posts`}>Posts</NavLink> |{" "}
+        <NavLink to={`/users/${user.id}/albums`}>Albums</NavLink> |{" "}
         <button onClick={handleLogout}>Logout</button>
+
       </nav>
 
       <hr />

@@ -1,8 +1,11 @@
 import { useState, useEffect } from "react";
 import PhotoItem from "./PhotoItem";
 import { deleteData, updateData, createData, getPhotosByAlbum } from "../api/api";
+import { useNavigate, useParams } from "react-router-dom";
 
 function AlbumItem({ item, onDelete, onChange }) {
+  const navigate = useNavigate();
+  const { userId } = useParams(); // שולף את המשתמש מ
   const [isEditing, setIsEditing] = useState(false);
   const [value, setValue] = useState(item.title);
   const [open, setOpen] = useState(false);
@@ -15,7 +18,11 @@ function AlbumItem({ item, onDelete, onChange }) {
   const pageSize = 10;
 
   const togglePhotos = () => setOpen(prev => !prev);
-
+  if (!open) {
+    navigate(`/users/${userId}/albums/${item.id}/photos`);
+  } else {
+    navigate(`/users/${userId}/albums`); // סגירת האלבום חוזרת לרשימת האלבומים
+  };
   // טעינת תמונות לפי page
   const loadMore = async () => {
     if (!hasMore || isLoading) return;
