@@ -27,6 +27,8 @@ export default function TodosPage() {
           onChange={update}
         />
       )}
+         addBody={false}
+      addPhoto={false}
       showExtraSearchButton={true}
     />
   );

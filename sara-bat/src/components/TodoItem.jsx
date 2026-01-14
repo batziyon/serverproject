@@ -9,7 +9,7 @@ function TodoItem({ item, onDelete, onToggle, onChange }) {
       <input type="checkbox" checked={item.completed} onChange={() => onToggle(item)} />
 
       {!isEditing ? (
-        <span>{item.title}</span>
+        <span>{item.id}-{item.title}</span>
       ) : (
         <input value={value} onChange={e => setValue(e.target.value)} />
       )}

@@ -1,32 +1,40 @@
 import { useState } from "react";
 
-function PhotoItem({ albumId, photo, onDelete, onUpdate }) {
-  const [title, setTitle] = useState(photo.title);
+function PhotoItem({ item, onDelete, onChange }) {
   const [isEditing, setIsEditing] = useState(false);
-
-  const handleDelete = () => onDelete(albumId, photo.id);
-  const handleSave = () => {
-    onUpdate(albumId, photo.id, { title });
-    setIsEditing(false);
-  };
+  const [value, setValue] = useState(item.title);
 
   return (
-    <div style={{ border: "1px solid #ccc", padding: 4, width: 150 }}>
-      <img src={photo.thumbnailUrl} alt={photo.title} />
-      <div>ID: {photo.id}</div>
-      {isEditing ? (
-        <>
-          <input value={title} onChange={e => setTitle(e.target.value)} />
-          <button onClick={handleSave}>שמור</button>
-          <button onClick={() => setIsEditing(false)}>ביטול</button>
-        </>
+    <div style={{ marginBottom: "16px" }}>
+      <img
+        src={item.thumbnailUrl}
+        alt={item.title}
+        width={150}
+      />
+
+      {!isEditing ? (
+        <p>{item.title}</p>
       ) : (
-        <>
-          <div>{title}</div>
-          <button onClick={() => setIsEditing(true)}>עדכן</button>
-          <button onClick={handleDelete}>מחק</button>
-        </>
+        <input
+          value={value}
+          onChange={e => setValue(e.target.value)}
+        />
       )}
+
+      {!isEditing ? (
+        <button onClick={() => setIsEditing(true)}>שינוי</button>
+      ) : (
+        <button
+          onClick={() => {
+            onChange(item, value);
+            setIsEditing(false);
+          }}
+        >
+          שמור
+        </button>
+      )}
+
+      <button onClick={() => onDelete(item.id)}>מחק</button>
     </div>
   );
 }

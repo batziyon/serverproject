@@ -1,11 +1,13 @@
 import ListPage from "../components/ListPage";
-import AlbumItem from "./AlbumItem";
-import { getAlbums, updateData, deleteData } from "../api/api";
+import AlbumItem from "../components/AlbumItem";
+import { getAlbums } from "../api/api";
 
 export default function AlbumsPage() {
-
-  const handleUpdateAlbum = (albumId, newData) => updateData("albums", albumId, newData);
-  const handleDeleteAlbum = (albumId) => deleteData("albums", albumId);
+  const updateAlbum = (item, newTitle) => ({
+    userId: item.userId,
+    id: item.id,
+    title: newTitle
+  });
 
   return (
     <ListPage
@@ -13,13 +15,16 @@ export default function AlbumsPage() {
       fetchData={getAlbums}
       searchableFields={["all", "id", "title"]}
       sortableFields={["id", "title"]}
-      renderItem={(item) => (
+      onUpdate={updateAlbum}
+      renderItem={(item, del, _toggle, update) => (
         <AlbumItem
-          album={item}
-          onDelete={handleDeleteAlbum}
-          onUpdate={handleUpdateAlbum}
+          item={item}
+          onDelete={del}
+          onChange={update}
         />
       )}
+      addBody={false}
+        addPhoto={true}
       showExtraSearchButton={false}
     />
   );

@@ -255,3 +255,20 @@ export async function updateData(type, id, payload) {
     throw err;
   }
 }
+export async function getPhotosByAlbum(albumId, page = 1, limit = 10) {
+  try {
+    const res = await fetch(
+      `${BASE_URL}/photos?albumId=${albumId}&_page=${page}&_limit=${limit}`
+    );
+
+    if (!res.ok) throw new Error("Failed to fetch photos");
+
+    return await res.json();
+  } catch (error) {
+    console.error(`Error fetching photos for album ${albumId}:`, error);
+    return [];
+  }
+}
+export async function updateAlbum(id, title) {
+  return updateData("albums", id, { title });
+}
