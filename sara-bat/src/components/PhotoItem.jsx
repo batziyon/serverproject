@@ -2,41 +2,42 @@ import { useState } from "react";
 
 function PhotoItem({ item, onDelete, onChange }) {
   const [isEditing, setIsEditing] = useState(false);
-  const [value, setValue] = useState(item.title);
+  const [title, setTitle] = useState(item.title);
 
   return (
-    <div style={{ marginBottom: "16px" }}>
-      <img
-        src={item.thumbnailUrl}
-        alt={item.title}
-        width={150}
-      />
+    <div style={{ border: "1px solid #ddd", padding: 8, marginBottom: 8 }}>
+      <img src={item.thumbnailUrl} alt="" />
+
+      <div>
+        <strong>{item.id}</strong> –{" "}
+        {!isEditing ? (
+          title
+        ) : (
+          <input
+            value={title}
+            onChange={e => setTitle(e.target.value)}
+          />
+        )}
+      </div>
 
       {!isEditing ? (
-        <p>{item.title}</p>
-      ) : (
-        <input
-          value={value}
-          onChange={e => setValue(e.target.value)}
-        />
-      )}
-
-      {!isEditing ? (
-        <button onClick={() => setIsEditing(true)}>שינוי</button>
+        <>
+          <button onClick={() => onDelete(item.id)}>מחק</button>
+          <button onClick={() => setIsEditing(true)}>שינוי</button>
+        </>
       ) : (
         <button
           onClick={() => {
-            onChange(item, value);
+            onChange(item, title);
             setIsEditing(false);
           }}
         >
           שמור
         </button>
       )}
-
-      <button onClick={() => onDelete(item.id)}>מחק</button>
     </div>
-  );
+);
+
 }
 
 export default PhotoItem;

@@ -11,7 +11,7 @@ function ListPage({
   option,
   onUpdate,
   addBody,
-  addPhoto
+
 }) {
   const [items, setItems] = useState([]);
   const [filtered, setFiltered] = useState([]);
@@ -82,10 +82,11 @@ function ListPage({
 
   // --- הוספה דינמית ---
   const addNewRow = () => {
-    setNewItems(prev => [...prev, { title: "", url: "", body: "" }]);
+    setNewItems(prev => [...prev, { title: "", body: "" }]);
   };
 
   const handleChangeRow = (index, field, value) => {
+ 
     setNewItems(prev => {
       const copy = [...prev];
       copy[index][field] = value;
@@ -148,15 +149,7 @@ function ListPage({
             onChange={e => handleChangeRow(index, "title", e.target.value)}
             style={{ width: "100%", marginBottom: "8px" }}
           />
-          {addPhoto && (
-            <input
-              type="text"
-              placeholder="קישור לתמונה"
-              value={item.url}
-              onChange={e => handleChangeRow(index, "url", e.target.value)}
-              style={{ width: "100%", marginBottom: "8px" }}
-            />
-          )}
+        
           {addBody && (
             <input
               type="text"

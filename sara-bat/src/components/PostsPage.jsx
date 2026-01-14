@@ -26,7 +26,7 @@ export default function PostsPage() {
         />
       )}
          addBody={true}
-      addPhoto={false}
+     
       showExtraSearchButton={false}
     />
   );

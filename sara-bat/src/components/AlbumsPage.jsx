@@ -24,7 +24,7 @@ export default function AlbumsPage() {
         />
       )}
       addBody={false}
-        addPhoto={true}
+   
       showExtraSearchButton={false}
     />
   );

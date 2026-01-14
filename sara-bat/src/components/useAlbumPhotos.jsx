@@ -1,35 +1,49 @@
 import { useEffect, useState } from "react";
 import { getPhotosByAlbum } from "../api/api";
 
-export function useAlbumPhotos(albumId, limit = 10) {
+export function useAlbumPhotos(albumId, limit = 10, enabled = false) {
   const [photos, setPhotos] = useState([]);
   const [page, setPage] = useState(1);
   const [hasMore, setHasMore] = useState(true);
+  const [isLoading, setIsLoading] = useState(false);
 
+  // התחלה מחדש כשפותחים אלבום או מחליפים אלבום
   useEffect(() => {
+    if (enabled) {
+      setPhotos([]);
+      setPage(1);
+      setHasMore(true);
+    }
+  }, [enabled, albumId]);
 
-    if (!albumId) return;
+  // טעינת תמונות
+  useEffect(() => {
+    if (!enabled || !hasMore) return;
 
-    console.log("Fetching photos for album", albumId, "page", page);
+    setIsLoading(true);
 
-    getPhotosByAlbum(albumId, page, limit).then(newPhotos => {
-      console.log("Fetched photos:", newPhotos);
-      if (newPhotos.length < limit) setHasMore(false);
-      setPhotos(prev => [...prev, ...newPhotos]);
-    });
-  }, [albumId, page]);
+    getPhotosByAlbum(albumId, page, limit)
+      .then(newPhotos => {
+        if (newPhotos.length < limit) {
+          setHasMore(false);
+        }
+        setPhotos(prev => [...prev, ...newPhotos]);
+      })
+      .catch(() => {
+        setHasMore(false);
+      })
+      .finally(() => {
+        setIsLoading(false);
+      });
+
+  }, [enabled, page, albumId, limit, hasMore]);
 
   const loadMore = () => {
-    if (hasMore) {
+    if (!isLoading && hasMore) {
       setPage(prev => prev + 1);
     }
   };
 
-  const reset = () => {
-    setPhotos([]);
-    setPage(1);
-    setHasMore(true);
-  };
+ return { photos, setPhotos, loadMore, hasMore, isLoading };
 
-  return { photos, loadMore, hasMore, reset };
 }

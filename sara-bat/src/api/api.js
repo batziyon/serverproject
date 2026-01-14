@@ -1,274 +1,125 @@
 const BASE_URL = "http://localhost:3000";
 
+/* ======================
+   פונקציית עזר כללית
+====================== */
+async function request(url, options = {}) {
+  const res = await fetch(url, options);
+  if (!res.ok) throw new Error("Network response was not ok");
+  return res.json();
+}
 
-// התחברות
+/* ======================
+   AUTH
+====================== */
 export async function login(username, password) {
-  const res = await fetch(
+  const users = await request(
     `${BASE_URL}/users?username=${username}&password=${password}`
   );
-
-  if (!res.ok) {
-    throw new Error("שגיאה בהתחברות");
-  }
-
-  const users = await res.json();
   return users.length ? users[0] : null;
 }
 
-
 export async function signUp(username) {
-  const checkRes = await fetch(`${BASE_URL}/users?username=${encodeURIComponent(username)}`);
-  if (!checkRes.ok) {
-    throw new Error("שגיאה בבדיקת המשתמשים");
-  }
-  const existingUsers = await checkRes.json();
-
-  if (existingUsers.length > 0) {
-    throw new Error("שם משתמש כבר קיים");
-  }
-  return null;
+  const users = await request(
+    `${BASE_URL}/users?username=${encodeURIComponent(username)}`
+  );
+  if (users.length) throw new Error("שם משתמש כבר קיים");
 }
 
-
 export async function createUser(user) {
-  if (!user.username) {
-    throw new Error("חסר שם משתמש");
-  }
+  if (!user.username) throw new Error("חסר שם משתמש");
 
-  const res = await fetch(`${BASE_URL}/users`, {
+  const fullUser = await request(`${BASE_URL}/users`, {
     method: "POST",
     headers: { "Content-Type": "application/json" },
     body: JSON.stringify(user)
   });
 
-  if (!res.ok) {
-    throw new Error("שגיאה ביצירת משתמש");
-  }
-
-  const fullUser = await res.json();
-
-  return {
-    id: fullUser.id,
-    username: user.username
-  };
+  return { id: fullUser.id, username: user.username };
 }
 
-
-// export async function selectTodos() {
-//   // localStorage.setItem(
-//   //     "currentUser",
-//   //     JSON.stringify({ id: 2, fullName: "משתמש לדוגמה" })
-//   // );
-//   const savedUser = localStorage.getItem("currentUser");
-//   const currentUser = savedUser ? JSON.parse(savedUser) : null;
-//   try {
-//     const res = await fetch(
-//       `http://localhost:3000/todos?userId=${currentUser.id}`
-//     );
-//     if (!res.ok) {
-//       throw new Error("Network response was not ok");
-//     }
-//     const data = res.json();
-//     return data;
-//   } catch (error) {
-//     console.error("Error fetching todos:", error);
-//     return [];
-//   }
-// }
-
-export async function toggleCompleted(todo) {
-  const updatedTodo = { ...todo, completed: !todo.completed };
-  try {
-    const res = await fetch(`http://localhost:3000/todos/${todo.id}`, {
-      method: "PATCH",
-      headers: {
-        "Content-Type": "application/json",
-      },
-      body: JSON.stringify({ completed: updatedTodo.completed }),
-    });
-    if (!res.ok) {
-      throw new Error("Network response was not ok");
-    }
-    return await res.json();
-  } catch (error) {
-    console.error("Error updating todo:", error);
-    throw error;
-  }
+/* ======================
+   USER DATA
+====================== */
+function getCurrentUser() {
+  const user = localStorage.getItem("currentUser");
+  if (!user) throw new Error("No current user");
+  return JSON.parse(user);
 }
 
 export async function fetchUserData(endpoint) {
-  const savedUser = localStorage.getItem("currentUser");
-  const user = savedUser ? JSON.parse(savedUser) : null;
-
-  if (!user) throw new Error("No current user");
-
   try {
-    const res = await fetch(`http://localhost:3000/${endpoint}?userId=${user.id}`);
-    if (!res.ok) throw new Error("Network response was not ok");
-
-    const data = await res.json();
-    return data;
-  } catch (error) {
-    console.error(`Error fetching ${endpoint}:`, error);
-    return []; // <--- תיקון: מחזירים מערך ריק במקרה שגיאה ולא כלום
+    const user = getCurrentUser();
+    return await request(`${BASE_URL}/${endpoint}?userId=${user.id}`);
+  } catch {
+    return [];
   }
 }
 
-// export async function getPosts() {
-//   return fetchUserData("posts");
-// }
+/* ======================
+   TODOS
+====================== */
+export async function getTodos() {
+  return request(`${BASE_URL}/todos`);
+}
 
-// export async function getTodos() {
-//   return fetchUserData("todos");
-// }
+export async function toggleCompleted(todo) {
+  return request(`${BASE_URL}/todos/${todo.id}`, {
+    method: "PATCH",
+    headers: { "Content-Type": "application/json" },
+    body: JSON.stringify({ completed: !todo.completed })
+  });
+}
 
+/* ======================
+   POSTS
+====================== */
+export async function getPosts() {
+  return request(`${BASE_URL}/posts`);
+}
+
+/* ======================
+   ALBUMS
+====================== */
 export async function getAlbums() {
   return fetchUserData("albums");
 }
 
-
-// export async function UpdateMarker(id, completed) {
-//   try {
-//     const res = await fetch(`http://localhost:3000/todos/${id}`, {
-//       method: "PATCH",
-//       headers: {
-//         "Content-Type": "application/json",
-//       },
-//       body: JSON.stringify({ completed }),
-//     });
-//   } catch (error) {
-//     console.error("Error updating todo:", error);
-//     throw error;
-//   }
-// }
-// בקובץ api/api.js
-
-// בקובץ api/api.js
-
-export async function getData(id, page = 1, limit = 10) {
-  try {
-
-    const res = await fetch(`https://jsonplaceholder.typicode.com/photos?albums=${id}&_page=${page}&_limit=${limit}`);
-
-    if (!res.ok) throw new Error("Network response was not ok");
-
-    const data = await res.json();
-    return data;
-  } catch (error) {
-    console.error(`Error fetching photos for album ${id}:`, error);
-    return [];
-  }
-
-}
-
-// api/api.js
-export async function getPhotos(albumId, page = 1, limit = 10) {
-  try {
-    const res = await fetch(`https://jsonplaceholder.typicode.com/photos?albumId=${albumId}&_page=${page}&_limit=${limit}`);
-    if (!res.ok) throw new Error("Failed to fetch photos");
-    return await res.json();
-  } catch (error) {
-    console.error(error);
-    return [];
-  }
-}
-
-// ושאר הפונקציות שלך (getAlbums, deleteData...)
-// export async function selectTodos() {
-//     // localStorage.setItem(
-//     //     "currentUser",
-//     //     JSON.stringify({ id: 2, fullName: "משתמש לדוגמה" })
-//     // );
-//     const savedUser = localStorage.getItem("currentUser");
-//     const currentUser = savedUser ? JSON.parse(savedUser) : null;
-//     try {
-//         const res = await fetch(
-//             `http://localhost:3000/todos?userId=${currentUser.id}`
-//         );
-//         if (!res.ok) {
-//             throw new Error("Network response was not ok");
-//         }
-//         const data = res.json();
-//         return data;
-//     } catch (error) {
-//         console.error("Error fetching todos:", error);
-//         return [];
-//     }
-// }
-
-// export async function toggleCompleted(todo) {
-//     const updatedTodo = { ...todo, completed: !todo.completed };
-//     try {
-//         const res = await fetch(`http://localhost:3000/todos/${todo.id}`, {
-//             method: "PATCH",
-//             headers: {
-//                 "Content-Type": "application/json",
-//             },
-//             body: JSON.stringify({ completed: updatedTodo.completed }),
-//         });
-//         if (!res.ok) {
-//             throw new Error("Network response was not ok");
-//         }
-//         return await res.json();
-//     } catch (error) {
-//         console.error("Error updating todo:", error);
-//         throw error;
-//     }
-// }
-
-export async function deleteData(type, id) {
-  try {
-
-    const res = await fetch(`http://localhost:3000/${type}/${id}`, {
-      method: "DELETE",
-    });
-    if (!res.ok) {
-      throw new Error("Network response was not ok");
-    }
-    return true;
-  } catch (error) {
-    console.error("Error deleting data:", error);
-    throw error;
-  }
-}
-export async function getTodos() {
-  const res = await fetch(`${BASE_URL}/todos`);
-  return res.json();
-}
-
-export async function getPosts() {
-  const res = await fetch(`${BASE_URL}/posts`);
-  return res.json();
-}
-
-export async function updateData(type, id, payload) {
-  try {
-    const res = await fetch(`${BASE_URL}/${type}/${id}`, {
-      method: "PATCH", // או PUT אם רוצים להחליף את כל האובייקט
-      headers: { "Content-Type": "application/json" },
-      body: JSON.stringify(payload)
-    });
-    if (!res.ok) throw new Error("Network response was not ok");
-    return await res.json();
-  } catch (err) {
-    console.error("Error updating data:", err);
-    throw err;
-  }
-}
-export async function getPhotosByAlbum(albumId, page = 1, limit = 10) {
-  try {
-    const res = await fetch(
-      `${BASE_URL}/photos?albumId=${albumId}&_page=${page}&_limit=${limit}`
-    );
-
-    if (!res.ok) throw new Error("Failed to fetch photos");
-
-    return await res.json();
-  } catch (error) {
-    console.error(`Error fetching photos for album ${albumId}:`, error);
-    return [];
-  }
-}
 export async function updateAlbum(id, title) {
   return updateData("albums", id, { title });
+}
+
+/* ======================
+   PHOTOS
+====================== */
+// 
+
+export async function getPhotosByAlbum(albumId, page = 1, limit = 10) {
+  return request(
+    `${BASE_URL}/photos?albumId=${albumId}&_page=${page}&_limit=${limit}`
+  );
+}
+
+/* ======================
+   CRUD כללי
+====================== */
+export async function updateData(type, id, payload) {
+  return request(`${BASE_URL}/${type}/${id}`, {
+    method: "PATCH",
+    headers: { "Content-Type": "application/json" },
+    body: JSON.stringify(payload)
+  });
+}
+
+export async function deleteData(type, id) {
+  await request(`${BASE_URL}/${type}/${id}`, { method: "DELETE" });
+  return true;
+}
+
+export async function createData(type, payload) {
+  return request(`${BASE_URL}/${type}`, {
+    method: "POST",
+    headers: { "Content-Type": "application/json" },
+    body: JSON.stringify(payload)
+  });
 }
