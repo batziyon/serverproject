@@ -6,6 +6,7 @@ import Register from "./components/Register";
 import CompleteProfile from "./components/CompleteProfile";
 import Home from "./components/Home";
 import Info from "./components/Info";
+import HomePage from "./components/HomePage";
 
 import TodosPage from "./components/TodosPage";
 import PostsPage from "./components/PostsPage";
@@ -69,10 +70,10 @@ function App() {
           </PrivateRoute>
         }
       >
-        {/* <Route index element={<Info />} /> */}
+        <Route index element={<HomePage />} />
 
         <Route path="users/:userId">
-          {/* <Route index element={<Info />} /> */}
+          <Route index element={<HomePage />} />
 
           <Route path="todos" element={<TodosPage />} />
           <Route path="posts" element={<PostsPage />} />
