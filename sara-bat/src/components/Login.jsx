@@ -26,8 +26,9 @@ function Login({ onLogin }) {
       }
 
       const authUser = {
-        id: user.id,
-        username: user.username
+        // id: user.id,
+        // username: user.username
+        user
       };
 
       localStorage.setItem("currentUser", JSON.stringify(authUser));

@@ -13,7 +13,6 @@ function Home({ user }) {
       <header>
         <h1>{user.username}</h1>
       </header>
-
       <nav>
         <NavLink to={`/users/${user.id}/info`}>Info</NavLink> |{" "}
         <NavLink to={`/users/${user.id}/todos`}>Todos</NavLink> |{" "}

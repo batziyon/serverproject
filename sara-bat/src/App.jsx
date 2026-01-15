@@ -69,13 +69,14 @@ function App() {
           </PrivateRoute>
         }
       >
-        <Route index element={<Info />} />
+        {/* <Route index element={<Info />} /> */}
 
         <Route path="users/:userId">
-          <Route index element={<Info />} />
+          {/* <Route index element={<Info />} /> */}
 
           <Route path="todos" element={<TodosPage />} />
           <Route path="posts" element={<PostsPage />} />
+          <Route path="Info" element={<Info />} />
 
           <Route path="albums">
             {/* עמוד רשימת האלבומים - /users/1/albums */}

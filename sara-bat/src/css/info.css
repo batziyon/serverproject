@@ -1,0 +1,16 @@
+.info-center {
+  display: flex;
+  justify-content: center;  /* מרכז אופקי */
+  align-items: center;      /* מרכז אנכי */
+  min-height: 100vh;        /* גובה מלא של הדף */
+}
+
+.info-content {
+  text-align: right;        /* שמאל-ימין לשפה עברית */
+  max-width: 500px;         /* רוחב מקסימלי כדי לא להימתח */
+  width: 100%;
+  padding: 20px;
+  box-shadow: 0 0 10px rgba(0,0,0,0.1); /* אופציונלי: גבול קל */
+  border-radius: 8px;       /* אופציונלי: פינות מעוגלות */
+  background-color: #fff;   /* אופציונלי: רקע לבן */
+}

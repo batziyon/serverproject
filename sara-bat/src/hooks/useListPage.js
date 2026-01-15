@@ -8,3 +8,5 @@
     setItems(prev => prev.filter(i => i.id !== id));
     setFiltered(prev => prev.filter(i => i.id !== id));
   };
+
+  //שתי פונקציות???
