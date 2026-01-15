@@ -1,5 +1,5 @@
 import { useState } from "react";
-import styles from "../css/Comments.css";
+//import styles from "../css/Coments.css";
 
 
 function CommentsItem({ item, onDelete, onChange }) {

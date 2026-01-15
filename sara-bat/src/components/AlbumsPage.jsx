@@ -1,10 +1,14 @@
-import { useParams } from "react-router-dom";
+import {Navigate ,useParams } from "react-router-dom";
 import ListPage from "./ListPage";
 import AlbumItem from "./AlbumItem";
 import { getAlbums } from "../api/api";
 
 export default function AlbumsPage() {
   const { userId } = useParams();
+  const currentUser = JSON.parse(localStorage.getItem("currentUser"));
+  if (userId !== currentUser.id) {
+    return <Navigate to="/login" />; // החזר לדף הבית אם ID שונה
+  }
 
   const updateAlbum = (item, newTitle) => {
     return { ...item, title: newTitle };

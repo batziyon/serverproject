@@ -1,4 +1,4 @@
-import { useParams } from "react-router-dom";
+import {Navigate ,useParams } from "react-router-dom";
 import CommentsItem from "./commentsItem";
 import { getCommentsByPost } from "../api/api"; 
 import ListPage from "./ListPage";
@@ -10,6 +10,11 @@ export default function CommentsPage() {
      const start = (page - 1) * limit;
      return await getCommentsByPost(postId, start, limit);
   };
+  const currentUser = JSON.parse(localStorage.getItem("currentUser"));
+  if (userId !== currentUser.id) {
+    return <Navigate to="/login" />; // החזר לדף הבית אם ID שונה
+  }
+
 
   return (
     <ListPage

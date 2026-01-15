@@ -19,6 +19,7 @@ function ListPage({
 }) {
   const navigate = useNavigate(); // יצירת פונקציית הניווט (כדי לעבור דפים בקוד)
   const { userId } = useParams(); // שליפת ה-userId מתוך הכתובת (למשל מ- /users/1/todos)
+ 
 
   const [items, setItems] = useState([]); // המקום שבו נשמרים כל הפריטים שהבאנו מהשרת
   const [filtered, setFiltered] = useState([]); // המקום שבו נשמרים הפריטים שמוצגים כרגע (אחרי חיפוש/סינון)

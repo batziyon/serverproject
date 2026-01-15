@@ -1,11 +1,14 @@
-import { useParams } from "react-router-dom";
+import {Navigate ,useParams } from "react-router-dom";
 import ListPage from "./ListPage";
 import PostItem from "./PostItem";
 import { getPosts } from "../api/api";
 
 export default function PostsPage() {
   const { userId } = useParams();
-
+  const currentUser = JSON.parse(localStorage.getItem("currentUser"));
+  if (userId !== currentUser.id) {
+    return <Navigate to="/login" />; // החזר לדף הבית אם ID שונה
+  }
   const updatePost = (item, updatedFields) => ({
     ...item,
     ...updatedFields

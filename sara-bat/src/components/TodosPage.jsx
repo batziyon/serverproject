@@ -1,10 +1,14 @@
-import { useParams } from "react-router-dom";
+import { Navigate, useParams } from "react-router-dom";
 import ListPage from "./ListPage";
 import TodoItem from "./TodoItem";
 import { getTodos } from "../api/api";
 
 export default function TodosPage() {
   const { userId } = useParams();
+  const currentUser = JSON.parse(localStorage.getItem("currentUser"));
+  if (userId !== currentUser.id) {
+    return <Navigate to="/login" />; // החזר לדף הבית אם ID שונה
+  }
 
   const updateTodo = (item, newTitle) => {
     return { ...item, title: newTitle };
@@ -22,19 +26,19 @@ export default function TodosPage() {
       title="Todos"
       fetchData={fetchMyTodos} // משתמשים בפונקציה החדשה
       limit={10}               // טוענים 10 בכל פעם
-      
+
       // הגדרת שדות להוספה (רק כותרת)
       addItemFields={[{ key: "title", placeholder: "מטלה חדשה" }]}
-      
+
       searchableFields={["title", "id"]}
       sortableFields={["id", "completed", "title"]}
-      
+
       // אפשרויות סינון נוספות (הושלם/לא הושלם)
       showExtraSearchButton={true}
       option={["all", "done", "active"]}
 
       onUpdate={updateTodo}
-      
+
       renderItem={(item, del, toggle, update) => (
         <TodoItem
           key={item.id}
