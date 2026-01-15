@@ -16,6 +16,8 @@ function Login({ onLogin }) {
 
   const handleSubmit = async (e) => {
     e.preventDefault();
+    
+
 
     try {
       const user = await login(formData.username, formData.password);
@@ -33,7 +35,8 @@ function Login({ onLogin }) {
 
       localStorage.setItem("currentUser", JSON.stringify(user));
       onLogin({ username: user.username, id: user.id });
-      navigate("/");
+      console.log( user);
+      navigate(`/users/${user.id}/home`);
 
     } catch (err) {
       alert(err.message);

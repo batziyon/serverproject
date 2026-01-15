@@ -73,7 +73,7 @@ function App() {
         <Route index element={<HomePage />} />
 
         <Route path="users/:userId">
-          <Route index element={<HomePage />} />
+          <Route path="home" index element={<HomePage />} />
 
           <Route path="todos" element={<TodosPage />} />
           <Route path="posts" element={<PostsPage />} />

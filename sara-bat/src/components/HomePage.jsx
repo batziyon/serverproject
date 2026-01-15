@@ -1,13 +1,13 @@
-import {Navigate ,useParams } from "react-router-dom";
+import { Navigate, useParams } from "react-router-dom";
 
 function HomePage() {
-    const userData = JSON.parse(localStorage.getItem("currentUser"));
-    const user = userData?.user;
- const { userId } = useParams();
-  const currentUser = JSON.parse(localStorage.getItem("currentUser"));
-  if (userId !== currentUser.id) {
-    return <Navigate to="/login" />; // החזר לדף הבית אם ID שונה
-  }
+    const user = JSON.parse(localStorage.getItem("currentUser"));
+    // const user = userData?.user;
+    const { userId } = useParams();
+    const currentUser = JSON.parse(localStorage.getItem("currentUser"));
+    if ((userId) !== currentUser.id) {
+        return <Navigate to="/login" />;
+    }
 
     return (
         <div style={{ padding: "20px", maxWidth: "800px", margin: "0 auto", textAlign: "center" }}>
