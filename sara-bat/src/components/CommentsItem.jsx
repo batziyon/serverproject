@@ -4,31 +4,28 @@ import { useState } from "react";
 
 function CommentsItem({ item, onDelete, onChange }) {
     const [isEditing, setIsEditing] = useState(false);
-    const [title, setTitle] = useState(item.title);
+    const [name, setName] = useState(item.name);
 
     return (
-        <div className={styles.body}>{item.body}
+        // <div className={styles.body}>{item.body}
 
-        <div className={styles.card}>
+      <>
 
-
-            <div className={styles.info}>
-                <div className={styles.id}>ID: {item.id}</div>
+                <div >ID: {item.id}</div>
                 {!isEditing ? (
-                    <div className={styles.title}>{item.name}</div>
+                    <div className={item.name}>{item.name}</div>
                 ) : (
 
-                    <div className={styles.id}>{item.body}</div>)}
+                    <div className={item.body}>{item.body}</div>)}
 
-                <div className={styles.actions}>
+                <div>
                     <button onClick={() => setIsEditing(!isEditing)}>פתח תגובה</button>
 
-                    <button onClick={() => onDelete(item.id)} className={`${styles.btn} ${styles.delete}`}>מחק</button>
+                    <button onClick={() => onDelete(item.id)} >מחק</button>
 
-                </div>
             </div>
-        </div>
-        </div>
+            </>
+
     );
 }
 export default CommentsItem;
