@@ -1,35 +1,49 @@
-// TodosPage.jsx
-import ListPage from "../components/ListPage";
-import TodoItem from "../components/TodoItem";
+import { useParams } from "react-router-dom";
+import ListPage from "./ListPage";
+import TodoItem from "./TodoItem";
 import { getTodos } from "../api/api";
 
 export default function TodosPage() {
-  const updateTodo = (item, newTitle) => ({
-    userId: item.userId,
-    id: item.id,
-    title: newTitle,
-    completed: item.completed
-  });
+  const { userId } = useParams();
+
+  const updateTodo = (item, newTitle) => {
+    return { ...item, title: newTitle };
+  };
+
+  // --- הפונקציה החדשה לטעינה מדורגת ---
+  const fetchMyTodos = async (page, limit) => {
+    const start = (page - 1) * limit;
+    // קריאה ל-API עם הפרמטרים החדשים
+    return await getTodos(userId, start, limit);
+  };
 
   return (
     <ListPage
       title="Todos"
-      fetchData={getTodos}
-      searchableFields={["all", "id", "title"]}
-      sortableFields={["id", "title"]}
-      option={["all","done","not done"]}
+      fetchData={fetchMyTodos} // משתמשים בפונקציה החדשה
+      limit={10}               // טוענים 10 בכל פעם
+      
+      // הגדרת שדות להוספה (רק כותרת)
+      addItemFields={[{ key: "title", placeholder: "מטלה חדשה" }]}
+      
+      searchableFields={["title", "id"]}
+      sortableFields={["id", "completed", "title"]}
+      
+      // אפשרויות סינון נוספות (הושלם/לא הושלם)
+      showExtraSearchButton={true}
+      option={["all", "done", "active"]}
+
       onUpdate={updateTodo}
+      
       renderItem={(item, del, toggle, update) => (
         <TodoItem
+          key={item.id}
           item={item}
           onDelete={del}
           onToggle={toggle}
           onChange={update}
         />
       )}
-         addBody={false}
-
-      showExtraSearchButton={true}
     />
   );
 }

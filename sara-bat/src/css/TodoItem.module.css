@@ -1,0 +1,121 @@
+/* components/TodoItem.module.css */
+
+.card {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  background: white;
+  padding: 15px 20px;
+  margin-bottom: 15px;
+  border-radius: 20px;
+  box-shadow: 0 8px 20px rgba(255, 182, 193, 0.3);
+  border: 2px solid #ffe4e1;
+  transition: all 0.3s ease;
+  gap: 15px;
+}
+
+.card:hover {
+  transform: translateY(-3px);
+  box-shadow: 0 12px 25px rgba(255, 182, 193, 0.5);
+  border-color: #ffb6c1;
+}
+
+.content {
+  display: flex;
+  align-items: center;
+  gap: 12px;
+  flex: 1;
+}
+
+.checkbox {
+  accent-color: #ff69b4;
+  width: 20px;
+  height: 20px;
+  cursor: pointer;
+}
+
+.idBadge {
+  background-color: #fff0f5;
+  color: #ff69b4;
+  font-size: 0.8rem;
+  font-weight: bold;
+  padding: 4px 8px;
+  border-radius: 50%;
+  min-width: 20px;
+  text-align: center;
+}
+
+.title {
+  font-size: 1.1rem;
+  font-weight: 500;
+  color: #555;
+  font-family: 'Varela Round', sans-serif;
+  transition: color 0.2s;
+}
+
+.completed {
+  color: #bbb;
+  text-decoration: line-through;
+}
+
+.inputField {
+  border: 2px solid #ffb6c1;
+  border-radius: 10px;
+  padding: 5px 10px;
+  outline: none;
+  font-size: 1rem;
+  color: #555;
+  width: 100%;
+}
+
+.inputField:focus {
+  border-color: #ff69b4;
+  box-shadow: 0 0 0 3px rgba(255, 105, 180, 0.1);
+}
+
+.actions {
+  display: flex;
+  gap: 8px;
+}
+
+.btn {
+  border: none;
+  padding: 8px 16px;
+  border-radius: 12px;
+  font-weight: bold;
+  cursor: pointer;
+  transition: all 0.2s;
+  font-size: 0.9rem;
+}
+
+.btn:active {
+  transform: scale(0.95);
+}
+
+/* כפתור עריכה */
+.editBtn {
+  background: #e6e6fa;
+  color: #6a5acd;
+}
+.editBtn:hover {
+  background: #dcd0ff;
+}
+
+/* כפתור שמירה */
+.saveBtn {
+  background: #98fb98;
+  color: #2e8b57;
+}
+.saveBtn:hover {
+  background: #90ee90;
+}
+
+/* כפתור מחיקה */
+.deleteBtn {
+  background: #ffb6c1;
+  color: #c71585;
+}
+.deleteBtn:hover {
+  background: #ff69b4;
+  color: white;
+}

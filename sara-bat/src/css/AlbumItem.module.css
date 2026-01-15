@@ -1,0 +1,56 @@
+/* AlbumItem.module.css */
+.card {
+  background: #fdf5e6; /* צבע קרם עדין */
+  border: 2px solid #ffe4b5; /* כתום אפרסק עדין */
+  border-radius: 15px;
+  padding: 20px;
+  margin-bottom: 15px;
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  transition: all 0.3s;
+}
+
+.card:hover {
+  background: #fff8dc;
+  transform: scale(1.01);
+}
+
+.titleSection {
+  display: flex;
+  align-items: center;
+  gap: 15px;
+}
+
+.icon {
+  font-size: 1.5rem;
+  background: white;
+  padding: 10px;
+  border-radius: 50%;
+  box-shadow: 0 2px 5px rgba(0,0,0,0.1);
+}
+
+.actions {
+  display: flex;
+  gap: 10px;
+}
+
+.viewBtn {
+  background: #ffdab9; /* אפרסק */
+  color: #8b4513; /* חום */
+  border: none;
+  padding: 8px 15px;
+  border-radius: 10px;
+  font-weight: bold;
+  cursor: pointer;
+}
+.viewBtn:hover { background: #ffcc99; }
+
+.btn {
+  border: none;
+  background: white;
+  padding: 8px;
+  border-radius: 8px;
+  cursor: pointer;
+  font-size: 0.9rem;
+}

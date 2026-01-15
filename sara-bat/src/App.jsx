@@ -10,7 +10,7 @@ import Info from "./components/Info";
 import TodosPage from "./components/TodosPage";
 import PostsPage from "./components/PostsPage";
 import AlbumsPage from "./components/AlbumsPage";
-import PhotoItem from "./components/PhotoItem";
+import PhotosPage from "./components/PhotosPage";
 
 // Route מוגן
 function PrivateRoute({ user, children }) {
@@ -78,19 +78,18 @@ function App() {
           <Route path="posts" element={<PostsPage />} />
 
           <Route path="albums">
+            {/* עמוד רשימת האלבומים - /users/1/albums */}
             <Route index element={<AlbumsPage />} />
-            <Route path=":albumId">
-              <Route index element={<AlbumsPage />} />
-              {<Route path="photos" element={<AlbumsPage />} />}
-            </Route>
+
+            {/* עמוד התמונות של אלבום ספציפי - /users/1/albums/5/photos */}
+            {/* שימי לב: אין כאן קינון מיותר */}
+            <Route path=":albumId/photos" element={<PhotosPage />} />
           </Route>
         </Route>
       </Route>
 
-
-      {/* fallback */}
-      <Route path="*" element={<Navigate to="/login" replace />} />
-    </Routes>
+      < Route path="*" element={< Navigate to="/login" replace />} />
+    </Routes >
   );
 }
 

@@ -1,47 +1,35 @@
 import { useState } from "react";
-import { useParams } from "react-router-dom";
+import styles from "../css/PhotoItem.module.css";
 
 function PhotoItem({ item, onDelete, onChange }) {
-
-const { userId, albumId, photoId } = useParams();
-
   const [isEditing, setIsEditing] = useState(false);
   const [title, setTitle] = useState(item.title);
+  const safeImageUrl = `https://picsum.photos/id/${item.id % 50}/200/200`;
 
   return (
-    <div style={{ border: "1px solid #ddd", padding: 8, marginBottom: 8 }}>
-      <img src={item.thumbnailUrl} alt="" />
+    <div className={styles.card}>
+      <img src={safeImageUrl} alt={item.title} className={styles.image} onError={(e) => e.target.style.display = 'none'} />
 
-      <div>
-        <strong>{item.id}</strong> –{" "}
+      <div className={styles.info}>
+        <div className={styles.id}>ID: {item.id}</div>
         {!isEditing ? (
-          title
+          <div className={styles.title}>{item.title}</div>
         ) : (
-          <input
-            value={title}
-            onChange={e => setTitle(e.target.value)}
-          />
+          <input value={title} onChange={(e) => setTitle(e.target.value)} style={{ padding: 5, borderRadius: 5, border: "1px solid #ccc", width: "100%" }} />
         )}
       </div>
 
-      {!isEditing ? (
-        <>
-          <button onClick={() => onDelete(item.id)}>מחק</button>
-          <button onClick={() => setIsEditing(true)}>שינוי</button>
-        </>
-      ) : (
-        <button
-          onClick={() => {
-            onChange(item, title);
-            setIsEditing(false);
-          }}
-        >
-          שמור
-        </button>
-      )}
+      <div className={styles.actions}>
+        {!isEditing ? (
+          <>
+            <button onClick={() => setIsEditing(true)} className={`${styles.btn} ${styles.edit}`}>ערוך</button>
+            <button onClick={() => onDelete(item.id)} className={`${styles.btn} ${styles.delete}`}>מחק</button>
+          </>
+        ) : (
+          <button onClick={() => { onChange(item, title); setIsEditing(false); }} className={`${styles.btn} ${styles.save}`}>שמור</button>
+        )}
+      </div>
     </div>
-);
-
+  );
 }
-
 export default PhotoItem;

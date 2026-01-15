@@ -54,14 +54,7 @@ export async function fetchUserData(endpoint) {
   } catch {
     return [];
   }
-}
-
-/* ======================
-   TODOS
-====================== */
-export async function getTodos() {
-  return request(`${BASE_URL}/todos`);
-}
+};
 
 export async function toggleCompleted(todo) {
   return request(`${BASE_URL}/todos/${todo.id}`, {
@@ -74,15 +67,51 @@ export async function toggleCompleted(todo) {
 /* ======================
    POSTS
 ====================== */
-export async function getPosts() {
-  return request(`${BASE_URL}/posts`);
+// api/api.js
+
+// api/api.js
+
+export async function getPosts(userId, start = 0, limit = 10) {
+    try {
+        // --- שינוי קריטי: החלפנו את הכתובת לשרת המקומי ---
+        let url = `http://localhost:3000/posts?_start=${start}&_limit=${limit}`;
+        
+        if (userId) {
+            url += `&userId=${userId}`;
+        }
+        
+        const res = await fetch(url);
+        if (!res.ok) throw new Error("Failed to fetch posts");
+        return await res.json();
+    } catch (error) {
+        console.error("Error fetching posts:", error);
+        return [];
+    }
 }
 
 /* ======================
    ALBUMS
 ====================== */
-export async function getAlbums() {
-  return fetchUserData("albums");
+// api/api.js
+
+export async function getAlbums(userId, start = 0, limit = 10) {
+  try {
+    // בניית הכתובת: פונים לשרת המקומי (כדי שהוספות יישמרו)
+    // ומוסיפים תמיכה ב-_start ו-_limit
+    let url = `http://localhost:3000/albums?_start=${start}&_limit=${limit}`;
+    
+    // אם שלחנו userId, מסננים לפי המשתמש
+    if (userId) {
+      url += `&userId=${userId}`;
+    }
+
+    const res = await fetch(url);
+    if (!res.ok) throw new Error("Failed to fetch albums");
+    return await res.json();
+  } catch (error) {
+    console.error("Error fetching albums:", error);
+    return [];
+  }
 }
 
 export async function updateAlbum(id, title) {
@@ -94,10 +123,20 @@ export async function updateAlbum(id, title) {
 ====================== */
 // 
 
-export async function getPhotosByAlbum(albumId, page = 1, limit = 10) {
-  return request(
-    `${BASE_URL}/photos?albumId=${albumId}&_page=${page}&_limit=${limit}`
-  );
+// api/api.js
+
+export async function getPhotosByAlbum(albumId, start, limit) {
+  try {
+    // שימי לב לשימוש ב-_start ו-_limit
+    const res = await fetch(
+      `https://jsonplaceholder.typicode.com/photos?albumId=${albumId}&_start=${start}&_limit=${limit}`
+    );
+    if (!res.ok) throw new Error("Failed to fetch photos");
+    return await res.json();
+  } catch (error) {
+    console.error("Error fetching photos:", error);
+    return [];
+  }
 }
 
 /* ======================
@@ -125,3 +164,24 @@ export async function createData(type, payload) {
 }
 
 
+// api/api.js
+
+export async function getTodos(userId, start = 0, limit = 10) {
+  try {
+    // בניית הכתובת עם תמיכה בטעינה חלקית (_start, _limit)
+    // אנו פונים לשרת המקומי (localhost:3000) כדי שהנתונים יישמרו
+    let url = `http://localhost:3000/todos?_start=${start}&_limit=${limit}`;
+    
+    // אם שלחנו userId, נוסיף סינון (אחרת זה יביא את המטלות של כולם)
+    if (userId) {
+      url += `&userId=${userId}`;
+    }
+
+    const res = await fetch(url);
+    if (!res.ok) throw new Error("Failed to fetch todos");
+    return await res.json();
+  } catch (error) {
+    console.error("Error fetching todos:", error);
+    return [];
+  }
+}

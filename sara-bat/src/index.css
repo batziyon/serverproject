@@ -1,68 +1,163 @@
+/* index.css */
 :root {
-  font-family: system-ui, Avenir, Helvetica, Arial, sans-serif;
-  line-height: 1.5;
-  font-weight: 400;
-
-  color-scheme: light dark;
-  color: rgba(255, 255, 255, 0.87);
-  background-color: #242424;
-
-  font-synthesis: none;
-  text-rendering: optimizeLegibility;
-  -webkit-font-smoothing: antialiased;
-  -moz-osx-font-smoothing: grayscale;
-}
-
-a {
-  font-weight: 500;
-  color: #646cff;
-  text-decoration: inherit;
-}
-a:hover {
-  color: #535bf2;
+  --bg-color: #0f172a;       /* רקע ראשי כהה מאוד */
+  --card-bg: #1e293b;        /* רקע כרטיסים */
+  --primary: #6366f1;        /* צבע ראשי - אינדיגו */
+  --primary-hover: #4f46e5;
+  --accent: #8b5cf6;         /* צבע דגש - סגול */
+  --text-main: #f1f5f9;      /* טקסט ראשי */
+  --text-muted: #94a3b8;     /* טקסט משני */
+  --border: #334155;         /* גבולות עדינים */
+  --radius: 12px;            /* פינות עגולות */
+  --shadow: 0 10px 15px -3px rgba(0, 0, 0, 0.1), 0 4px 6px -2px rgba(0, 0, 0, 0.05);
 }
 
 body {
   margin: 0;
-  display: flex;
-  place-items: center;
-  min-width: 320px;
+  font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif; /* פונט נקי */
+  background-color: var(--bg-color);
+  color: var(--text-main);
+  -webkit-font-smoothing: antialiased;
   min-height: 100vh;
+  display: flex;
+  justify-content: center;
 }
 
+#root {
+  width: 100%;
+  max-width: 900px; /* רוחב נוח לקריאה */
+  padding: 2rem;
+  box-sizing: border-box;
+}
+
+/* --- כותרות --- */
 h1 {
-  font-size: 3.2em;
-  line-height: 1.1;
+  font-size: 3rem;
+  background: linear-gradient(to right, var(--primary), var(--accent));
+  -webkit-background-clip: text;
+  background-clip: text;
+  color: transparent; /* טקסט גרדיאנט */
+  margin-bottom: 0.5rem;
+  font-weight: 800;
+  letter-spacing: -1px;
 }
 
-button {
+h2, h3, h4 {
+  color: var(--text-main);
+  margin-top: 0;
+}
+
+/* --- ניווט (Navigation) --- */
+nav {
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  gap: 15px;
+  background: var(--card-bg);
+  padding: 15px 25px;
+  border-radius: 50px; /* צורת גלולה */
+  box-shadow: var(--shadow);
+  margin-bottom: 40px;
+  border: 1px solid var(--border);
+  flex-wrap: wrap;
+}
+
+nav a {
+  text-decoration: none;
+  color: var(--text-muted);
+  font-weight: 600;
+  transition: all 0.3s ease;
+  padding: 5px 10px;
   border-radius: 8px;
-  border: 1px solid transparent;
-  padding: 0.6em 1.2em;
-  font-size: 1em;
-  font-weight: 500;
-  font-family: inherit;
-  background-color: #1a1a1a;
-  cursor: pointer;
-  transition: border-color 0.25s;
-}
-button:hover {
-  border-color: #646cff;
-}
-button:focus,
-button:focus-visible {
-  outline: 4px auto -webkit-focus-ring-color;
 }
 
-@media (prefers-color-scheme: light) {
-  :root {
-    color: #213547;
-    background-color: #ffffff;
-  }
-  a:hover {
-    color: #747bff;
-  }
-  button {
-    background-color: #f9f9f9;
-  }
+nav a.active, nav a:hover {
+  color: #fff;
+  background-color: rgba(99, 102, 241, 0.2); /* רקע שקוף של הצבע הראשי */
+}
+
+/* העלמת הקווים המפרידים (|) בטקסט אם אפשר, או עיצובם */
+nav {
+  color: var(--border); /* הופך את ה-| לכהה וכמעט בלתי נראה */
+}
+
+/* --- כפתורים --- */
+button {
+  background: linear-gradient(135deg, var(--primary), var(--accent));
+  color: white;
+  border: none;
+  padding: 10px 20px;
+  border-radius: 8px;
+  font-weight: 600;
+  cursor: pointer;
+  transition: transform 0.2s, box-shadow 0.2s;
+  box-shadow: 0 4px 6px rgba(0,0,0,0.2);
+}
+
+button:hover {
+  transform: translateY(-2px);
+  box-shadow: 0 6px 12px rgba(0,0,0,0.3);
+}
+
+button:active {
+  transform: translateY(0);
+}
+
+/* כפתורי מחיקה או פעולות משניות (אופציונלי) */
+button:has(text:contains("מחק")), button[onClick*="delete"] { 
+/* סלקטורים מתקדמים עובדים חלקית, אז נלך על עיצוב כללי */
+  filter: hue-rotate(160deg); /* משנה את הצבע לאדמדם/ורוד */
+}
+
+/* --- טפסים ואינפוטים --- */
+input {
+  background-color: var(--card-bg);
+  border: 1px solid var(--border);
+  color: var(--text-main);
+  padding: 10px 15px;
+  border-radius: 8px;
+  font-size: 1rem;
+  outline: none;
+  transition: border-color 0.3s;
+  margin: 5px;
+}
+
+input:focus {
+  border-color: var(--primary);
+  box-shadow: 0 0 0 2px rgba(99, 102, 241, 0.3);
+}
+
+/* --- כרטיסים (Albums / Photos) --- */
+/* מכיוון שיש inline styles, אנחנו משתמשים ב !important במקומות קריטיים
+   או מעצבים את האלמנטים הפנימיים כדי שייראו טוב */
+
+div[style*="border"] { /* תופס את הדיב עם ה-border של האלבומים */
+  background-color: var(--card-bg) !important;
+  border: 1px solid var(--border) !important;
+  border-radius: var(--radius);
+  padding: 24px !important;
+  margin-bottom: 24px !important;
+  box-shadow: var(--shadow);
+  transition: transform 0.2s;
+  text-align: right; /* יישור לימין לעברית */
+}
+
+div[style*="border"]:hover {
+  transform: translateY(-3px);
+  border-color: var(--primary) !important;
+}
+
+/* תמונות */
+img {
+  border-radius: 8px;
+  max-width: 100%;
+  height: auto;
+  box-shadow: 0 4px 6px rgba(0,0,0,0.2);
+}
+
+hr {
+  border: 0;
+  height: 1px;
+  background: var(--border);
+  margin: 30px 0;
 }

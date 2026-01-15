@@ -1,34 +1,48 @@
-import ListPage from "../components/ListPage";
-import PostItem from "../components/PostItem";
+import { useParams } from "react-router-dom";
+import ListPage from "./ListPage";
+import PostItem from "./PostItem";
 import { getPosts } from "../api/api";
 
 export default function PostsPage() {
-  const updatePost = (item, newTitle, newBody) => ({
-    id: item.id,
-    userId: item.userId,
-    title: newTitle,
-    body: newBody
+  const { userId } = useParams();
+
+  const updatePost = (item, updatedFields) => ({
+    ...item,
+    ...updatedFields
   });
+
+  const fetchMyPosts = async (page, limit) => {
+    const start = (page - 1) * limit;
+    return await getPosts(userId, start, limit); 
+  };
 
   return (
     <ListPage
       title="Posts"
-      fetchData={getPosts}
-      searchableFields={["all", "id", "title"]}
+      fetchData={fetchMyPosts}
+      limit={10}
+      
+      // אין צורך לשלוח backPath ידני, כי אנחנו נוסיף כפתור בית קבוע בליסט
+      
+      addItemFields={[
+        { key: "title", placeholder: "כותרת הפוסט" },
+        { key: "body", placeholder: "תוכן הפוסט" } 
+      ]}
+      
+      // --- התיקון: החזרתי את "all" להתחלה ---
+      searchableFields={["all", "title", "id", "body"]}
+      // ---------------------------------------
+      
       sortableFields={["id", "title"]}
-      option={[]}
       onUpdate={updatePost}
-      renderItem={(item, onDelete, toggle, update) => (
+      renderItem={(item, del, _toggle, update) => (
         <PostItem
+          key={item.id}
           item={item}
-          onDelete={onDelete}
+          onDelete={del}
           onChange={update}
         />
       )}
-         addBody={true}
-     
-      showExtraSearchButton={false}
     />
   );
 }
-
