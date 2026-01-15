@@ -1,4 +1,5 @@
 import { useState } from "react";
+import { useNavigate, useParams } from "react-router-dom";
 import styles from "../css/PostItem.module.css"; // ייבוא העיצוב
 
 function PostItem({ item, onDelete, onChange }) {
@@ -6,13 +7,16 @@ function PostItem({ item, onDelete, onChange }) {
   const [title, setTitle] = useState(item.title);
   const [body, setBody] = useState(item.body);
   const [isExpanded, setIsExpanded] = useState(false);
-
+  const { userId } = useParams();
+  const navigate = useNavigate();
   const handleSave = () => {
     onChange(item, { title, body });
     setIsEditing(false);
   };
   const handleShowComments = () => {
-    navigate(`/users/${userId}/posts/${item.id}/comments`); 
+    navigate(`/users/${userId}/posts/${item.id}/comments`);
+
+
   };
   return (
     <div className={styles.card}>
@@ -38,14 +42,14 @@ function PostItem({ item, onDelete, onChange }) {
           {!isEditing ? (
             <p>{item.body}</p>
           ) : (
-             <textarea value={body} onChange={(e) => setBody(e.target.value)} style={{ width: "100%", height: 100, padding: 10, borderRadius: 8, border: "1px solid #ccc" }} />
+            <textarea value={body} onChange={(e) => setBody(e.target.value)} style={{ width: "100%", height: 100, padding: 10, borderRadius: 8, border: "1px solid #ccc" }} />
           )}
 
           <div className={styles.actions}>
             {!isEditing ? (
               <>
                 <button onClick={() => setIsEditing(true)} className={`${styles.btn} ${styles.editBtn}`}>עריכה</button>
-                        <button onClick={handleShowComments} className={styles.viewBtn}>פתח תגובות</button>
+                <button onClick={handleShowComments} className={styles.viewBtn}>פתח תגובות</button>
                 <button onClick={() => onDelete(item.id)} className={`${styles.btn} ${styles.deleteBtn}`}>מחק</button>
               </>
             ) : (

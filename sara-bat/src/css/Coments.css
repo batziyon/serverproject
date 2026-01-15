@@ -1,0 +1,71 @@
+/* CommentsItem.module.css */
+
+.card {
+  background: white;
+  padding: 16px 18px;
+  margin-bottom: 14px;
+  border-radius: 22px;
+  border: 2px solid #f0e6ff; /* סגול בהיר */
+  box-shadow: 0 4px 10px rgba(0, 0, 0, 0.05);
+}
+
+.info {
+  display: flex;
+  flex-direction: column;
+  gap: 8px;
+}
+
+.id {
+  font-size: 0.75rem;
+  color: #999;
+}
+
+.title {
+  font-weight: bold;
+  color: #4b4b4b;
+  font-size: 1rem;
+}
+
+.body {
+  font-size: 0.95rem;
+  color: #666;
+  line-height: 1.4;
+  background: #faf8ff;
+  padding: 10px 12px;
+  border-radius: 14px;
+}
+
+.actions {
+  margin-top: 10px;
+  display: flex;
+  gap: 10px;
+}
+
+.btn {
+  border: none;
+  padding: 6px 14px;
+  border-radius: 12px;
+  cursor: pointer;
+  font-size: 0.85rem;
+  transition: transform 0.2s, opacity 0.2s;
+}
+
+.btn:hover {
+  transform: scale(1.05);
+  opacity: 0.9;
+}
+
+.delete {
+  background: #ffd6dc;
+  color: #b03060;
+}
+
+.edit {
+  background: #e6f7ff;
+  color: #0077a3;
+}
+
+.save {
+  background: #d8f5e2;
+  color: #2e8b57;
+}
