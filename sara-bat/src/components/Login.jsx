@@ -31,8 +31,8 @@ function Login({ onLogin }) {
         user
       };
 
-      localStorage.setItem("currentUser", JSON.stringify(authUser));
-      onLogin(authUser);
+      localStorage.setItem("currentUser", JSON.stringify(user));
+      onLogin({ username: user.username, id: user.id });
       navigate("/");
 
     } catch (err) {

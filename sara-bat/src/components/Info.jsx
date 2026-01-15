@@ -1,6 +1,6 @@
 function Info() {
   const data = JSON.parse(localStorage.getItem("currentUser"));
-  const user = data.user;
+  const user = data;
 
   if (!user) {
     return <div>אין משתמש מחובר</div>;
@@ -28,8 +28,8 @@ function Info() {
         <p><span className="info-label">אתר:</span> {user.website}</p>
 
         <h3 className="info-section">פרטי החברה</h3>
-        <p><span className="info-label">שם החברה:</span> {user.company.name}</p>
-        <p><span className="info-label">מגמה:</span> {user.company.catchPhrase}</p>
+        {/* <p><span className="info-label">שם החברה:</span> {user.company.name}</p> */}
+        {/* <p><span className="info-label">מגמה:</span> {user.company.catchPhrase}</p> */}
       </div>
     </div>
   );

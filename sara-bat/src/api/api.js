@@ -35,8 +35,10 @@ export async function createUser(user) {
     body: JSON.stringify(user)
   });
 
-  // return { id: fullUser.id, username: user.username };
-  return fullUser;
+   console.log({ id: fullUser.id, username: user.username });
+   console.log(fullUser);
+   
+   return fullUser;
 }
 
 /* ======================

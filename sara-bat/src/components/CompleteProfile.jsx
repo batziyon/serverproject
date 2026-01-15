@@ -36,7 +36,7 @@ function CompleteProfile({ setUser }) {
     try {
       const savedUser = await createUser(newUser);
       localStorage.setItem("currentUser", JSON.stringify(savedUser));
-      setUser(savedUser);
+      setUser({ username: savedUser.id, user: savedUser });
       navigate("/");
     } catch (err) {
       alert(err.message);
