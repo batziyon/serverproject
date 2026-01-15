@@ -21,18 +21,11 @@ export default function PostsPage() {
       title="Posts"
       fetchData={fetchMyPosts}
       limit={10}
-      
-      // אין צורך לשלוח backPath ידני, כי אנחנו נוסיף כפתור בית קבוע בליסט
-      
       addItemFields={[
         { key: "title", placeholder: "כותרת הפוסט" },
         { key: "body", placeholder: "תוכן הפוסט" } 
       ]}
-      
-      // --- התיקון: החזרתי את "all" להתחלה ---
-      searchableFields={["all", "title", "id", "body"]}
-      // ---------------------------------------
-      
+      searchableFields={["all", "title", "id"]}
       sortableFields={["id", "title"]}
       onUpdate={updatePost}
       renderItem={(item, del, _toggle, update) => (

@@ -10,9 +10,7 @@ export default function AlbumsPage() {
     return { ...item, title: newTitle };
   };
 
-  // --- הפונקציה שתומכת בטעינה מדורגת ---
   const fetchMyAlbums = async (page, limit) => {
-    // המרת מספר עמוד לנקודת התחלה (Offset)
     const start = (page - 1) * limit;
     return await getAlbums(userId, start, limit);
   };
@@ -20,18 +18,11 @@ export default function AlbumsPage() {
   return (
     <ListPage
       title="Albums"
-      fetchData={fetchMyAlbums} // שולחים את הפונקציה המעודכנת
-      limit={10}                // טוענים 10 כל פעם
-      
-      baseData={{ userId: parseInt(userId) }} // נתונים להוספה (שיוך למשתמש)
-      
-      // כפתור חזור לדף הבית של המשתמש
+      fetchData={fetchMyAlbums} 
+      limit={10}              
+      baseData={{ userId: parseInt(userId) }} 
       backPath={`/users/${userId}`} 
-      
-      // --- ההודעה שביקשת כשהכל נגמר ---
       endMessage="-- אין עוד אלבומים --"
-      
-      // שדות להוספת אלבום חדש
       addItemFields={[
         { key: "title", placeholder: "שם האלבום החדש" }
       ]}
@@ -40,7 +31,7 @@ export default function AlbumsPage() {
       sortableFields={["id", "title"]}
       
       onUpdate={updateAlbum}
-      
+
       renderItem={(item, del, _toggle, update) => (
         <AlbumItem
           key={item.id}

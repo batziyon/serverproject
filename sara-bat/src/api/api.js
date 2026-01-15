@@ -92,11 +92,6 @@ export async function getPosts(userId, start = 0, limit = 10) {
     }
 }
 
-/* ======================
-   ALBUMS
-====================== */
-// api/api.js
-
 export async function getAlbums(userId, start = 0, limit = 10) {
   try {
     // בניית הכתובת: פונים לשרת המקומי (כדי שהוספות יישמרו)
@@ -138,6 +133,20 @@ export async function getPhotosByAlbum(albumId, start, limit) {
     return await res.json();
   } catch (error) {
     console.error("Error fetching photos:", error);
+    return [];
+  }
+}
+
+export async function getCommentsByPost(postId, start, limit) {
+  try {
+    // שימי לב לשימוש ב-_start ו-_limit
+    const res = await fetch(
+      `https://jsonplaceholder.typicode.com/comments?postId=${postId}&_start=${start}&_limit=${limit}`
+    );
+    if (!res.ok) throw new Error("Failed to fetch comments");
+    return await res.json();
+  } catch (error) {
+    console.error("Error fetching comments:", error);
     return [];
   }
 }

@@ -11,7 +11,9 @@ function PostItem({ item, onDelete, onChange }) {
     onChange(item, { title, body });
     setIsEditing(false);
   };
-
+  const handleShowComments = () => {
+    navigate(`/users/${userId}/posts/${item.id}/comments`); 
+  };
   return (
     <div className={styles.card}>
       <div className={styles.header}>
@@ -43,6 +45,7 @@ function PostItem({ item, onDelete, onChange }) {
             {!isEditing ? (
               <>
                 <button onClick={() => setIsEditing(true)} className={`${styles.btn} ${styles.editBtn}`}>עריכה</button>
+                        <button onClick={handleShowComments} className={styles.viewBtn}>פתח תגובות</button>
                 <button onClick={() => onDelete(item.id)} className={`${styles.btn} ${styles.deleteBtn}`}>מחק</button>
               </>
             ) : (
