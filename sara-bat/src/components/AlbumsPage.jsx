@@ -25,7 +25,7 @@ export default function AlbumsPage() {
       fetchData={fetchMyAlbums} 
       limit={10}              
       baseData={{ userId: parseInt(userId) }} 
-      backPath={`/users/${userId}`} 
+      backPath={`/users/${userId}/home`} 
       endMessage="-- אין עוד אלבומים --"
       addItemFields={[
         { key: "title", placeholder: "שם האלבום החדש" }

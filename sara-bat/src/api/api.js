@@ -123,11 +123,10 @@ export async function updateAlbum(id, title) {
 
 // api/api.js
 
-export async function getPhotosByAlbum(albumId, start, limit) {
+export async function getPhotosByAlbum(albumId, start = 0, limit = 10) {
   try {
-    // שימי לב לשימוש ב-_start ו-_limit
     const res = await fetch(
-      `https://jsonplaceholder.typicode.com/photos?albumId=${albumId}&_start=${start}&_limit=${limit}`
+      `${BASE_URL}/photos?albumId=${albumId}&_start=${start}&_limit=${limit}`
     );
     if (!res.ok) throw new Error("Failed to fetch photos");
     return await res.json();
@@ -137,11 +136,11 @@ export async function getPhotosByAlbum(albumId, start, limit) {
   }
 }
 
-export async function getCommentsByPost(postId, start, limit) {
+
+export async function getCommentsByPost(postId, start = 0, limit = 10) {
   try {
-    // שימי לב לשימוש ב-_start ו-_limit
     const res = await fetch(
-      `https://jsonplaceholder.typicode.com/comments?postId=${postId}&_start=${start}&_limit=${limit}`
+      `${BASE_URL}/comments?postId=${postId}&_start=${start}&_limit=${limit}`
     );
     if (!res.ok) throw new Error("Failed to fetch comments");
     return await res.json();
@@ -150,6 +149,7 @@ export async function getCommentsByPost(postId, start, limit) {
     return [];
   }
 }
+
 
 /* ======================
    CRUD כללי
@@ -168,6 +168,7 @@ export async function deleteData(type, id) {
 }
 
 export async function createData(type, payload) {
+  console.log("Creating data:", type, payload);
   return request(`${BASE_URL}/${type}`, {
     method: "POST",
     headers: { "Content-Type": "application/json" },
@@ -195,5 +196,36 @@ export async function getTodos(userId, start = 0, limit = 10) {
   } catch (error) {
     console.error("Error fetching todos:", error);
     return [];
+  }
+}
+export async function searchOne(
+  type,
+  value,
+  fields = [],
+  extraParams = {}
+) {
+  try {
+    for (const field of fields) {
+      const params = new URLSearchParams({
+        [field]: value,
+        ...extraParams
+      });
+
+      const res = await fetch(
+        `${BASE_URL}/${type}?${params.toString()}`
+      );
+
+      if (!res.ok) continue;
+
+      const data = await res.json();
+      if (data.length) {
+        return data[0]; // בדיוק כמו login
+      }
+    }
+
+    return null;
+  } catch (error) {
+    console.error("SearchOne error:", error);
+    return null;
   }
 }

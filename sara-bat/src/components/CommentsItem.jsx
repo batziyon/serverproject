@@ -2,7 +2,7 @@ import { useState } from "react";
 //import styles from "../css/Coments.css";
 
 
-function CommentsItem({ item, onDelete, onChange }) {
+function CommentsItem({ item, onDelete }) {
     const [isEditing, setIsEditing] = useState(false);
     const [name, setName] = useState(item.name);
 

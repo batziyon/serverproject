@@ -1,14 +1,14 @@
-import {Navigate ,useParams } from "react-router-dom";
+import { Navigate, useParams } from "react-router-dom";
 import CommentsItem from "./commentsItem";
-import { getCommentsByPost } from "../api/api"; 
+import { getCommentsByPost } from "../api/api";
 import ListPage from "./ListPage";
 
 export default function CommentsPage() {
   const { userId, postId } = useParams();
 
   const fetchMycomments = async (page, limit) => {
-     const start = (page - 1) * limit;
-     return await getCommentsByPost(postId, start, limit);
+    const start = (page - 1) * limit;
+    return await getCommentsByPost(postId, start, limit);
   };
   const currentUser = JSON.parse(localStorage.getItem("currentUser"));
   if (userId !== currentUser.id) {
@@ -17,29 +17,27 @@ export default function CommentsPage() {
 
 
   return (
-    <ListPage
-      title="comments"
-      fetchData={fetchMycomments}
-      limit={10} 
-      baseData={{ postId: parseInt(postId) }}
-      backPath={`/users/${userId}/albums`} 
-      addItemFields={[
-        { key: "title", placeholder: "כותרת התגובה" },
-        { key: "body", placeholder: "תוכן התגובה" }
-      ]}
-      
-      searchableFields={["title", "id"]}
-      sortableFields={["id", "title"]}
-
-      onUpdate={null}
-      renderItem={(item, del, _toggle, update) => (
-        <CommentsItem
-          key={item.id}
-          item={item}
-          onDelete={del}
-          onChange={update}
-        />
-      )}
+   <ListPage
+  title="comments"
+  fetchData={fetchMycomments}
+  limit={10}
+  baseData={{ postId }}
+  backPath={`/users/${userId}/posts`}
+  primaryField="body"   // ⭐️ חשוב מאוד
+  addItemFields={[
+    { key: "name", placeholder: "שם המגיב" },
+    { key: "body", placeholder: "תוכן התגובה" }
+  ]}
+  searchableFields={["name", "body"]}
+  sortableFields={["id", "name"]}
+  renderItem={(item, del, _toggle, update) => (
+    <CommentsItem
+      key={item.id}
+      item={item}
+      onDelete={del}
+      onChange={update}
     />
+  )}
+/>
   );
 }

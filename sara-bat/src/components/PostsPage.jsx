@@ -1,4 +1,4 @@
-import {Navigate ,useParams } from "react-router-dom";
+import { Navigate, useParams } from "react-router-dom";
 import ListPage from "./ListPage";
 import PostItem from "./PostItem";
 import { getPosts } from "../api/api";
@@ -16,17 +16,19 @@ export default function PostsPage() {
 
   const fetchMyPosts = async (page, limit) => {
     const start = (page - 1) * limit;
-    return await getPosts(userId, start, limit); 
+    return await getPosts(userId, start, limit);
   };
 
   return (
     <ListPage
       title="Posts"
       fetchData={fetchMyPosts}
+      backPath={`/users/${userId}/home`}
+        endMessage="-- אין עוד פוסטים --"
       limit={10}
       addItemFields={[
         { key: "title", placeholder: "כותרת הפוסט" },
-        { key: "body", placeholder: "תוכן הפוסט" } 
+        { key: "body", placeholder: "תוכן הפוסט" }
       ]}
       searchableFields={["all", "title", "id"]}
       sortableFields={["id", "title"]}

@@ -33,7 +33,8 @@ export default function TodosPage() {
       searchableFields={["title", "id"]}
       sortableFields={["id", "completed", "title"]}
 
-      // אפשרויות סינון נוספות (הושלם/לא הושלם)
+      backPath={`/users/${userId}/home`}
+      endMessage="-- אין עוד מטלות --"
       showExtraSearchButton={true}
       option={["all", "done", "active"]}
 
