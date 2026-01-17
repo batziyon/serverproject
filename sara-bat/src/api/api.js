@@ -207,7 +207,7 @@ export async function searchOne(
   try {
     for (const field of fields) {
       const params = new URLSearchParams({
-        [field]: value,
+        [`${field}_like`]: value, // <-- כאן!
         ...extraParams
       });
 

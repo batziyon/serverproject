@@ -1,3 +1,5 @@
+import { Navigate, useParams, useNavigate } from "react-router-dom";
+
 function Info() {
   const data = JSON.parse(localStorage.getItem("currentUser"));
   const user = data;
@@ -5,10 +7,19 @@ function Info() {
   if (!user) {
     return <div>אין משתמש מחובר</div>;
   }
+  const { userId } = useParams();
+  if (userId !== user.id) {
+    return <Navigate to="/login" />; // החזר לדף הבית אם ID שונה
+  }
 
+  const navigate = useNavigate();
   return (
     <div className="info-center">
+
       <div className="info-content">
+        <button onClick={() => navigate(`/users/${userId}/home`)}>
+          חזור לדף הבית
+        </button>
         <h2 className="info-title">עמוד מידע</h2>
         <p className="info-greeting">שלום {user.username}!</p>
 
