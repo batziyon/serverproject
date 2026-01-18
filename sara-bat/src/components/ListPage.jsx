@@ -1,13 +1,9 @@
-import { useEffect, useState } from "react";
+
 import { useNavigate, useParams } from "react-router-dom";
-import {
-  toggleCompleted,
-  updateData,
-  deleteData,
-  createData,
-  searchOne
-} from "../api/api";
 import useCrud from "../hooks/useCrud";
+import useSearchAndSort from "../hooks/useSearchAndSort";
+import useListData from "../hooks/useListData";
+import useRowInputs from "../hooks/useRowInputs";
 
 function ListPage({
   title,
@@ -23,128 +19,36 @@ function ListPage({
   limit = 10,
   backPath,
   primaryField = "title",
-  endMessage="-- אין עוד פריטים --"
+  endMessage = "-- אין עוד פריטים --"
 }) {
   const navigate = useNavigate();
   const { userId } = useParams();
 
-  /* ===== STATE (כמו שהיה) ===== */
-  const [items, setItems] = useState([]);
-  const [filtered, setFiltered] = useState([]);
-  const [page, setPage] = useState(1);
-  const [hasMore, setHasMore] = useState(true);
-  const [isLoading, setIsLoading] = useState(false);
-  const [searchValue, setSearchValue] = useState("");
-  const [searchField, setSearchField] = useState(searchableFields[0] || "all");
-  const [newItems, setNewItems] = useState([]);
+  const {
+    items,
+    filtered,
+    setFiltered,
+    isLoading,
+    hasMore,
+    loadMore,
+    setItems
+  } = useListData(fetchData, limit);
 
   const crud = useCrud({ title, baseData, setItems, setFiltered, onUpdate, primaryField });
+  const searchSort = useSearchAndSort({
+    title,
+    items,
+    setFiltered,
+    searchableFields,
+    baseData,
+    userId
+  });
+  const rowInputs = useRowInputs(addItemFields, primaryField, crud.createMany);
 
-  /* ===== LOAD DATA ===== */
-  const loadData = async (pageNum) => {
-    setIsLoading(true);
-    const data = await fetchData(pageNum, limit);
-
-    if (data.length < limit) setHasMore(false);
-
-    if (pageNum === 1) {
-      setItems(data);
-      setFiltered(data);
-    } else {
-      setItems(prev => [...prev, ...data]);
-      setFiltered(prev => [...prev, ...data]);
-    }
-
-    setIsLoading(false);
-  };
-
-  useEffect(() => {
-    
-    console.log("Fetching data...");
-    setPage(1);
-    setHasMore(true);
-    loadData(1);
-  }, [fetchData]);
-
-  const handleLoadMore = () => {
-    const next = page + 1;
-    setPage(next);
-    loadData(next);
-  };
-
-  /* ===== 🔥 SEARCH – זה החלק שהוחלף ===== */
-  useEffect(() => {
-    const runSearch = async () => {
-      if (!searchValue) {
-        setFiltered(items);
-        return;
-      }
-      setIsLoading(true);
-      const result = await searchOne(
-        title.toLowerCase(),
-        searchValue,
-        searchField === "all" ? searchableFields : [searchField],
-        baseData,
-        userId
-      );
-      setFiltered(result || []);
-      setIsLoading(false);
-    };
-    runSearch();
-    // eslint-disable-next-line
-  }, [searchValue, searchField]);
-
-  // Whenever items change (from loadData), update filtered only if not searching
-  useEffect(() => {
-    if (!searchValue) {
-      setFiltered(items);
-    }
-    // eslint-disable-next-line
-  }, [items]);
-
-  /* ===== SORT ===== */
-  const handleSort = (field) => {
-    setFiltered([...filtered].sort((a, b) =>
-      String(a[field]).localeCompare(String(b[field]))
-    ));
-  };
-
-  /* ===== EXTRA FILTER ===== */
-  const handleExtraSearch = (completed) => {
-    if (completed === "all") return setFiltered(items);
-    setFiltered(
-      items.filter(item => item.completed === (completed === "done"))
-    );
-  };
-
-  /* ===== CRUD ===== */
   const handleUpdate = crud.update;
   const handleToggle = crud.toggle;
   const handleDelete = crud.remove;
 
-  /* ===== ADD ===== */
-  const addNewRow = () => {
-    const obj = {};
-    addItemFields.forEach(f => obj[f.key] = "");
-    setNewItems(prev => [...prev, obj]);
-  };
-
-  const handleChangeRow = (index, field, value) => {
-    setNewItems(prev => {
-      const copy = [...prev];
-      copy[index][field] = value;
-      return copy;
-    });
-  };
-
-  const handleAddAll = async () => {
-    const valid = newItems.filter(i => i[primaryField]);
-    if (!valid.length) return;
-    await crud.createMany(valid);
-    setNewItems([]);
-  };
-
-  /* ===== RENDER ===== */
   return (
     <div>
       <div style={{ display: "flex", gap: 10, marginBottom: 15 }}>
@@ -159,7 +63,7 @@ function ListPage({
       <h2>{title}</h2>
 
       <div style={{ marginBottom: 15 }}>
-        <select value={searchField} onChange={e => setSearchField(e.target.value)}>
+        <select value={searchSort.searchField} onChange={e => searchSort.setSearchField(e.target.value)}>
           <option value="all">all</option>
           {searchableFields.map(f => (
             <option key={f} value={f}>{f}</option>
@@ -168,25 +72,24 @@ function ListPage({
 
         <input
           placeholder="חיפוש..."
-          value={searchValue}
-          onChange={e => setSearchValue(e.target.value)}
+          value={searchSort.searchValue}
+          onChange={e => searchSort.setSearchValue(e.target.value)}
         />
 
         {showExtraSearchButton && (
-          <select onChange={e => handleExtraSearch(e.target.value)}>
+          <select onChange={e => searchSort.extraFilter(e.target.value)}>
             {option.map(option => (
               <option key={option} value={option}>{option}</option>
             ))}
           </select>
         )}
 
-        <select onChange={e => handleSort(e.target.value)}>
+        <select onChange={e => searchSort.sortBy(e.target.value)}>
           {sortableFields.map(fields => (
             <option key={fields} value={fields}>{fields}</option>
           ))}
         </select>
       </div>
-
 
       <ul style={{ listStyle: "none", padding: 0 }}>
         {filtered.map(item => (
@@ -196,22 +99,22 @@ function ListPage({
         ))}
       </ul>
 
-      {!searchValue && hasMore && !isLoading && (
-        <button onClick={handleLoadMore}>טען עוד</button>
+      {!searchSort.searchValue && hasMore && !isLoading && (
+        <button onClick={loadMore}>טען עוד</button>
       )}
 
       {isLoading && <p>טוען...</p>}
 
-      {!searchValue && !isLoading && !hasMore && items.length > 0 && (
+      {!searchSort.searchValue && !isLoading && !hasMore && items.length > 0 && (
         <p style={{ color: "#888", textAlign: "center" }}>
           {endMessage}
         </p>
       )}
       <hr />
 
-      <button onClick={addNewRow}>הוסף שורה חדשה</button>
+      <button onClick={rowInputs.addRow}>הוסף שורה חדשה</button>
 
-      {newItems.map((item, index) => (
+      {rowInputs.newRows.map((item, index) => (
         <div key={index}>
           {addItemFields.map(field => (
             <input
@@ -219,15 +122,15 @@ function ListPage({
               placeholder={field.placeholder}
               value={item[field.key]}
               onChange={e =>
-                handleChangeRow(index, field.key, e.target.value)
+                rowInputs.changeRow(index, field.key, e.target.value)
               }
             />
           ))}
         </div>
       ))}
 
-      {newItems.length > 0 && (
-        <button onClick={handleAddAll}>הוסף</button>
+      {rowInputs.newRows.length > 0 && (
+        <button onClick={rowInputs.createRows}>הוסף</button>
       )}
     </div>
   );

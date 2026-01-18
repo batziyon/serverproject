@@ -5,16 +5,15 @@ import ListPage from "../components/ListPage";
 
 export default function CommentsPage() {
   const { userId, postId } = useParams();
-
+  const currentUser = getCurrentUser();
+  if (userId !== currentUser.id) {
+    alert("אין לך גישה לעמוד זה.");
+    return <Navigate to={`http://localhost:5173/users/${currentUser.id}/home`} />;
+  }
   const fetchMycomments = async (page, limit) => {
     const start = (page - 1) * limit;
     return await getInnerList("comments", "postId", postId, start, limit);
   };
-  const currentUser = getCurrentUser();
-  if (userId !== currentUser.id) {
-    alert("אין לך גישה לעמוד זה.");
-    return <Navigate to={`http://localhost:5173/users/${currentUser.id}/home`} />; // החזר לדף הבית אם ID שונה
-  }
   return (
     <ListPage
       title="comments"
@@ -22,7 +21,7 @@ export default function CommentsPage() {
       limit={10}
       baseData={{ postId }}
       backPath={`/users/${userId}/posts`}
-      primaryField="body"   // ⭐️ חשוב מאוד
+      primaryField="body"
       addItemFields={[
         { key: "name", placeholder: "שם המגיב" },
         { key: "body", placeholder: "תוכן התגובה" }

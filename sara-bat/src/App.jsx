@@ -13,7 +13,7 @@ import PostsPage from "./page/PostsPage.jsx";
 import AlbumsPage from "./page/AlbumsPage.jsx";
 import PhotosPage from "./page/PhotosPage.jsx";
 import CommentsPage from "./page/CommentsPage.jsx";
-// Route מוגן
+
 function PrivateRoute({ user, children }) {
   if (!user) {
     return <Navigate to="/login" replace />;
