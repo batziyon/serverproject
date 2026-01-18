@@ -1,5 +1,5 @@
 import { Navigate, useParams } from "react-router-dom";
-import ListPage from "./ListPage";
+import ListPage from "../components/ListPage";
 import PostItem from "./PostItem";
 import { getPosts } from "../api/api";
 

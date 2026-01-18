@@ -21,17 +21,11 @@ function Login({ onLogin }) {
 
     try {
       const user = await login(formData.username, formData.password);
-
+ 
       if (!user) {
         alert("שם משתמש או סיסמה שגויים");
         return;
       }
-
-      const authUser = {
-        // id: user.id,
-        // username: user.username
-        user
-      };
 
       localStorage.setItem("currentUser", JSON.stringify(user));
       onLogin({ username: user.username, id: user.id });

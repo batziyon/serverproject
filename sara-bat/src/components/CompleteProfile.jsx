@@ -33,14 +33,11 @@ function CompleteProfile({ setUser }) {
       }
     };
 
-    try {
-      const savedUser = await createUser(newUser);
-      localStorage.setItem("currentUser", JSON.stringify(savedUser));
-      setUser({ username: savedUser.id, user: savedUser });
-      navigate(`/users/${savedUser.id}/home`);
-    } catch (err) {
-      alert(err.message);
-    }
+    const savedUser = await createUser(newUser);
+    localStorage.setItem("currentUser", JSON.stringify(savedUser));
+    setUser({ username: savedUser.id, user: savedUser });
+    navigate(`/users/${savedUser.id}/home`);
+
   };
 
   return (

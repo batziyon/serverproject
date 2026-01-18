@@ -1,5 +1,5 @@
 import { Navigate, useParams } from "react-router-dom";
-import ListPage from "./ListPage";
+import ListPage from "../components/ListPage";
 import TodoItem from "./TodoItem";
 import { getTodos } from "../api/api";
 
@@ -13,11 +13,8 @@ export default function TodosPage() {
   const updateTodo = (item, newTitle) => {
     return { ...item, title: newTitle };
   };
-
-  // --- הפונקציה החדשה לטעינה מדורגת ---
   const fetchMyTodos = async (page, limit) => {
     const start = (page - 1) * limit;
-    // קריאה ל-API עם הפרמטרים החדשים
     return await getTodos(userId, start, limit);
   };
 

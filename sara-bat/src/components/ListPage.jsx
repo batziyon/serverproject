@@ -56,6 +56,7 @@ function ListPage({
   };
 
   useEffect(() => {
+    console.log("Fetching data...");
     setPage(1);
     setHasMore(true);
     loadData(1);
@@ -70,28 +71,32 @@ function ListPage({
   /* ===== 🔥 SEARCH – זה החלק שהוחלף ===== */
   useEffect(() => {
     const runSearch = async () => {
-      // אין חיפוש – חזרה להתנהגות רגילה
       if (!searchValue) {
         setFiltered(items);
         return;
       }
-
       setIsLoading(true);
-
-      // חיפוש בשרת (ולא מקומי!)
       const result = await searchOne(
         title.toLowerCase(),
         searchValue,
         searchField === "all" ? searchableFields : [searchField],
-        baseData
+        baseData,
+        userId
       );
-
-      setFiltered(result ? [result] : []);
+      setFiltered(result || []);
       setIsLoading(false);
     };
-
     runSearch();
-  }, [searchValue, searchField, items]);
+    // eslint-disable-next-line
+  }, [searchValue, searchField]);
+
+  // Whenever items change (from loadData), update filtered only if not searching
+  useEffect(() => {
+    if (!searchValue) {
+      setFiltered(items);
+    }
+    // eslint-disable-next-line
+  }, [items]);
 
   /* ===== SORT ===== */
   const handleSort = (field) => {
@@ -193,24 +198,19 @@ function ListPage({
 
         {showExtraSearchButton && (
           <select onChange={e => handleExtraSearch(e.target.value)}>
-            {option.map(o => (
-              <option key={o} value={o}>{o}</option>
+            {option.map(option => (
+              <option key={option} value={option}>{option}</option>
             ))}
           </select>
         )}
 
         <select onChange={e => handleSort(e.target.value)}>
-          {sortableFields.map(f => (
-            <option key={f} value={f}>{f}</option>
+          {sortableFields.map(fields => (
+            <option key={fields} value={fields}>{fields}</option>
           ))}
         </select>
       </div>
 
-      {!searchValue && !isLoading && !hasMore && items.length > 0 && (
-        <p style={{ color: "#888", textAlign: "center" }}>
-          {endMessage}
-        </p>
-      )}
 
       <ul style={{ listStyle: "none", padding: 0 }}>
         {filtered.map(item => (
@@ -226,6 +226,11 @@ function ListPage({
 
       {isLoading && <p>טוען...</p>}
 
+      {!searchValue && !isLoading && !hasMore && items.length > 0 && (
+        <p style={{ color: "#888", textAlign: "center" }}>
+          {endMessage}
+        </p>
+      )}
       <hr />
 
       <button onClick={addNewRow}>הוסף שורה חדשה</button>
@@ -253,176 +258,3 @@ function ListPage({
 }
 
 export default ListPage;
-
-
-// import { useState } from "react";
-// import { useNavigate, useParams } from "react-router-dom";
-// import ListToolbar from "./ListToolBar";
-// import ListItems from "./ListItems";
-// import LoadMoreButton from "./LoadMoreButton";
-// import InlineAddForm from "./InlineAddForm";
-
-// import useListData from "../hooks/useListData";
-// import useSearchAndSort from "../hooks/useSearchAndSort";
-// import useCrud from "../hooks/useCrud";
-
-// function ListPage({
-//   title,
-//   fetchData,
-//   searchableFields = [],
-//   sortableFields = [],
-//   renderItem,
-//   showExtraSearchButton,
-//   option,
-//   onUpdate,
-//   addItemFields = [{ key: "title", placeholder: "כותרת" }],
-//   baseData = {},
-//   limit = 10,
-//   backPath,
-//   primaryField = "title",
-//   endMessage = "-- אין עוד פריטים --"
-// }) {
-//   const navigate = useNavigate();
-//   const { userId } = useParams();
-
-//   /* ===== DATA + PAGINATION ===== */
-//   const {
-//     items,
-//     filtered,
-//     setFiltered,
-//     isLoading,
-//     hasMore,
-//     loadMore,
-//     setItems
-//   } = useListData(fetchData, limit);
-
-//   /* ===== SEARCH / SORT / FILTER ===== */
-//   const {
-//     searchValue,
-//     setSearchValue,
-//     searchField,
-//     setSearchField,
-//     sortBy,
-//     extraFilter
-//   } = useSearchAndSort({
-//     title,
-//     items,
-//     setFiltered,
-//     searchableFields,
-//     baseData
-//   });
-
-//   /* ===== CRUD ===== */
-//   const {
-//     update,
-//     toggle,
-//     remove,
-//     createMany
-//   } = useCrud({
-//     title,
-//     baseData,
-//     setItems,
-//     setFiltered
-//   });
-
-//   /* ===== ADD INLINE ===== */
-//   const [newItems, setNewItems] = useState([]);
-
-//   const addNewRow = () => {
-//     const obj = {};
-//     addItemFields.forEach(f => (obj[f.key] = ""));
-//     setNewItems(prev => [...prev, obj]);
-//   };
-
-//   const handleChangeRow = (index, field, value) => {
-//     setNewItems(prev => {
-//       const copy = [...prev];
-//       copy[index][field] = value;
-//       return copy;
-//     });
-//   };
-
-//   const handleAddAll = async () => {
-//     const valid = newItems.filter(i => i[primaryField]);
-//     if (!valid.length) return;
-
-//     await createMany(valid);
-//     setNewItems([]);
-//   };
-
-//   /* ===== RENDER ===== */
-//   return (
-//     <div>
-//       {/* ניווט */}
-//       <div style={{ display: "flex", gap: 10, marginBottom: 15 }}>
-//         {userId && (
-//           <button onClick={() => navigate(`/users/${userId}/home`)}>
-//             🏠 בית
-//           </button>
-//         )}
-//         {backPath && (
-//           <button onClick={() => navigate(backPath)}>
-//             ← חזור
-//           </button>
-//         )}
-//       </div>
-
-//       <h2>{title}</h2>
-
-//       {/* Toolbar */}
-//       <ListToolbar
-//         searchableFields={searchableFields}
-//         sortableFields={sortableFields}
-//         searchField={searchField}
-//         setSearchField={setSearchField}
-//         searchValue={searchValue}
-//         setSearchValue={setSearchValue}
-//         showExtraSearchButton={showExtraSearchButton}
-//         option={option}
-//         onExtraSearch={extraFilter}
-//         onSort={sortBy}
-//       />
-
-//       {/* End message */}
-//       {!searchValue && !isLoading && !hasMore && items.length > 0 && (
-//         <p style={{ color: "#888", textAlign: "center" }}>
-//           {endMessage}
-//         </p>
-//       )}
-
-//       {/* Items */}
-//       <ListItems
-//         items={filtered}
-//         renderItem={(item) =>
-//           renderItem(
-//             item,
-//             remove,
-//             toggle,
-//             (item, ...args) => update(item, onUpdate(item, ...args))
-//           )
-//         }
-//       />
-
-//       {/* Load more */}
-//       {!searchValue && hasMore && !isLoading && (
-//         <LoadMoreButton onClick={loadMore} />
-//       )}
-
-//       {isLoading && <p>טוען...</p>}
-
-//       <hr />
-
-//       {/* Inline add */}
-//       <InlineAddForm
-//         fields={addItemFields}
-//         items={newItems}
-//         onChange={handleChangeRow}
-//         onAddRow={addNewRow}
-//         onSubmit={handleAddAll}
-//         primaryField={primaryField}
-//       />
-//     </div>
-//   );
-// }
-
-// export default ListPage;

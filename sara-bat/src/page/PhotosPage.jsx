@@ -1,9 +1,11 @@
 import {Navigate ,useParams } from "react-router-dom";
-import ListPage from "./ListPage";
+import ListPage from "../components/ListPage";
 import PhotoItem from "./PhotoItem";
 import { getPhotosByAlbum } from "../api/api"; 
 
 export default function PhotosPage() {
+  console.log("Rendering PhotosPage");
+  
   const { userId, albumId } = useParams();
   const currentUser = JSON.parse(localStorage.getItem("currentUser"));
   if (userId !== currentUser.id) {
@@ -26,10 +28,11 @@ export default function PhotosPage() {
         { key: "title", placeholder: "כותרת התמונה" },
         { key: "url", placeholder: "קישור לתמונה (URL)" }
       ]}
-
+      endMessage="-- אין עוד תמונות --"
       searchableFields={["title", "id"]}
       sortableFields={["id", "title"]}
       onUpdate={updatePhoto}
+      showExtraSearchButton={false}
       
       renderItem={(item, del, _toggle, update) => (
         <PhotoItem

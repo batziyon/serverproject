@@ -26,7 +26,6 @@ function Info() {
         <h3 className="info-section">פרטים אישיים</h3>
         <p><span className="info-label">שם:</span> {user.username}</p>
         <p><span className="info-label">מזהה:</span> {user.id}</p>
-        <p><span className="info-label">סיסמה:</span> {user.password}</p>
         <p><span className="info-label">דוא"ל:</span> {user.email}</p>
 
         <h3 className="info-section">כתובת</h3>
@@ -39,8 +38,9 @@ function Info() {
         <p><span className="info-label">אתר:</span> {user.website}</p>
 
         <h3 className="info-section">פרטי החברה</h3>
-        {/* <p><span className="info-label">שם החברה:</span> {user.company.name}</p> */}
-        {/* <p><span className="info-label">מגמה:</span> {user.company.catchPhrase}</p> */}
+        <p><span className="info-label">שם החברה:</span> {user.company.name}</p>
+        <p><span className="info-label">סלוגן:</span> {user.company.catchPhrase}</p>
+        <p><span className="info-label">פעילות:</span> {user.company.bs}</p>
       </div>
     </div>
   );

@@ -1,6 +1,3 @@
-import {Navigate ,useParams } from "react-router-dom";
-import ListPage from "./ListPage";
-import AlbumItem from "./AlbumItem";
 import { getAlbums } from "../api/api";
 
 export default function AlbumsPage() {
@@ -30,12 +27,10 @@ export default function AlbumsPage() {
       addItemFields={[
         { key: "title", placeholder: "שם האלבום החדש" }
       ]}
-      
+
       searchableFields={["title", "id"]}
       sortableFields={["id", "title"]}
-      
       onUpdate={updateAlbum}
-
       renderItem={(item, del, _toggle, update) => (
         <AlbumItem
           key={item.id}
@@ -45,5 +40,5 @@ export default function AlbumsPage() {
         />
       )}
     />
-  );
+    );
 }

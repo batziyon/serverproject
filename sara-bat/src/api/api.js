@@ -16,7 +16,10 @@ export async function login(username, password) {
   const users = await request(
     `${BASE_URL}/users?username=${username}&password=${password}`
   );
-  return users.length ? users[0] : null;
+    const { website, ...userWithoutPassword } = users[0]; // הוצאת הסיסמה
+  return users.length ? 
+userWithoutPassword  
+ : null;
 }
 
 export async function signUp(username) {
@@ -35,10 +38,8 @@ export async function createUser(user) {
     body: JSON.stringify(user)
   });
 
-   console.log({ id: fullUser.id, username: user.username });
-   console.log(fullUser);
-   
-   return fullUser;
+   const { website, ...userWithoutPassword } = fullUser; // הוצאת הסיסמה
+   return userWithoutPassword;
 }
 
 /* ======================
@@ -66,7 +67,17 @@ export async function toggleCompleted(todo) {
     body: JSON.stringify({ completed: !todo.completed })
   });
 }
-
+export async function searchMany(type, value, fields, baseData = {}) {
+  // דוגמה: שלח בקשת GET עם פרמטרים מתאימים
+  const params = new URLSearchParams({
+    q: value,
+    fields: fields.join(","),
+    ...baseData
+  });
+  const res = await fetch(`/api/${type}/search?${params}`);
+  if (!res.ok) return [];
+  return await res.json();
+}
 /* ======================
    POSTS
 ====================== */
@@ -136,7 +147,6 @@ export async function getPhotosByAlbum(albumId, start = 0, limit = 10) {
   }
 }
 
-
 export async function getCommentsByPost(postId, start = 0, limit = 10) {
   try {
     const res = await fetch(
@@ -198,34 +208,38 @@ export async function getTodos(userId, start = 0, limit = 10) {
     return [];
   }
 }
+
 export async function searchOne(
   type,
   value,
   fields = [],
-  extraParams = {}
+  extraParams = {},
+  userId
 ) {
   try {
+    let allResults = [];
     for (const field of fields) {
       const params = new URLSearchParams({
-        [`${field}_like`]: value, // <-- כאן!
         ...extraParams
       });
-
       const res = await fetch(
         `${BASE_URL}/${type}?${params.toString()}`
       );
-
       if (!res.ok) continue;
-
       const data = await res.json();
-      if (data.length) {
-        return data[0]; // בדיוק כמו login
-      }
-    }
+      
+      // סינון התוצאות על פי הערך
+      const filteredResults = data.filter(item => 
+        item[field] && item[field].toString().toLowerCase().includes(value.toLowerCase())
+      );
 
-    return null;
+      allResults = allResults.concat(filteredResults);
+    }
+    // הסרת כפילויות לפי id
+    const unique = Array.from(new Map(allResults.map(i => [i.id, i])).values());
+    return unique;
   } catch (error) {
     console.error("SearchOne error:", error);
-    return null;
+    return [];
   }
 }

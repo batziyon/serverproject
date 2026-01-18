@@ -1,7 +1,7 @@
 import { Navigate, useParams } from "react-router-dom";
 import CommentsItem from "./commentsItem";
 import { getCommentsByPost } from "../api/api";
-import ListPage from "./ListPage";
+import ListPage from "../components/ListPage";
 
 export default function CommentsPage() {
   const { userId, postId } = useParams();
@@ -28,7 +28,7 @@ export default function CommentsPage() {
     { key: "name", placeholder: "שם המגיב" },
     { key: "body", placeholder: "תוכן התגובה" }
   ]}
-  searchableFields={["name", "body"]}
+  searchableFields={["id","name"]}
   sortableFields={["id", "name"]}
   renderItem={(item, del, _toggle, update) => (
     <CommentsItem

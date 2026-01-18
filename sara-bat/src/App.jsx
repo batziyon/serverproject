@@ -6,13 +6,13 @@ import Register from "./components/Register";
 import CompleteProfile from "./components/CompleteProfile";
 import Home from "./components/Home";
 import Info from "./components/Info";
-import HomePage from "./components/HomePage";
+import HomePage from "./page/HomePage.jsx";
 
-import TodosPage from "./components/TodosPage";
-import PostsPage from "./components/PostsPage";
-import AlbumsPage from "./components/AlbumsPage";
-import PhotosPage from "./components/PhotosPage";
-import CommentsPage from "./components/CommentsPage";
+import TodosPage from "./page/TodosPage.jsx";
+import PostsPage from "./page/PostsPage.jsx";
+import AlbumsPage from "./page/AlbumsPage.js";
+import PhotosPage from "./page/PhotosPage.jsx";
+import CommentsPage from "./page/CommentsPage.jsx";
 // Route מוגן
 function PrivateRoute({ user, children }) {
   if (!user) {
@@ -39,7 +39,6 @@ function App() {
 
   return (
     <Routes>
-      {/* ציבורי */}
       <Route path="/login" element={<Login onLogin={setUser} />} />
       <Route path="/register" element={<Register />} />
       <Route
