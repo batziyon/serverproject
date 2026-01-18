@@ -2,11 +2,11 @@ import { Navigate, useParams } from "react-router-dom";
 
 function HomePage() {
     const user = JSON.parse(localStorage.getItem("currentUser"));
-    // const user = userData?.user;
     const { userId } = useParams();
     const currentUser = JSON.parse(localStorage.getItem("currentUser"));
     if ((userId) !== currentUser.id) {
-        return <Navigate to="/login" />;
+        alert("אין לך גישה לעמוד זה.");
+        return <Navigate to={`http://localhost:5173/users/${currentUser.id}/home`} />;
     }
 
     return (

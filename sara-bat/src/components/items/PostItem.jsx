@@ -1,6 +1,6 @@
 import { useState } from "react";
 import { useNavigate, useParams } from "react-router-dom";
-import styles from "../css/PostItem.module.css"; // ייבוא העיצוב
+import styles from "../../css/PostItem.module.css"; // ייבוא העיצוב
 
 function PostItem({ item, onDelete, onChange }) {
   const [isEditing, setIsEditing] = useState(false);

@@ -1,6 +1,6 @@
 import { useState } from "react";
 // אנחנו מייבאים את העיצוב כאובייקט בשם styles
-import styles from "../css/TodoItem.module.css"; 
+import styles from "../../css/TodoItem.module.css"; 
 
 function TodoItem({ item, onDelete, onToggle, onChange }) {
   const [isEditing, setIsEditing] = useState(false);

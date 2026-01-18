@@ -1,6 +1,6 @@
 import { useState } from "react";
 import { useNavigate, useParams } from "react-router-dom";
-import styles from "../css/AlbumItem.module.css";
+import styles from "../../css/AlbumItem.module.css";
 
 function AlbumItem({ item, onDelete, onChange }) {
   const navigate = useNavigate();

@@ -1,6 +1,6 @@
 import { useLocation, useNavigate } from "react-router-dom";
 import { useState } from "react";
-import { createUser } from "../api/api";
+import { createUser } from "../../api/api";
 
 function CompleteProfile({ setUser }) {
   const { state } = useLocation();

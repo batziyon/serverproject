@@ -1,25 +1,17 @@
 const BASE_URL = "http://localhost:3000";
 
-/* ======================
-   פונקציית עזר כללית
-====================== */
 async function request(url, options = {}) {
   const res = await fetch(url, options);
   if (!res.ok) throw new Error("Network response was not ok");
   return res.json();
 }
 
-/* ======================
-   AUTH
-====================== */
 export async function login(username, password) {
   const users = await request(
     `${BASE_URL}/users?username=${username}&password=${password}`
   );
-    const { website, ...userWithoutPassword } = users[0]; // הוצאת הסיסמה
-  return users.length ? 
-userWithoutPassword  
- : null;
+    const { website, ...userWithoutPassword } = users[0];
+  return users.length ? userWithoutPassword : null;
 }
 
 export async function signUp(username) {
@@ -37,15 +29,14 @@ export async function createUser(user) {
     headers: { "Content-Type": "application/json" },
     body: JSON.stringify(user)
   });
-
-   const { website, ...userWithoutPassword } = fullUser; // הוצאת הסיסמה
+   const { website, ...userWithoutPassword } = fullUser;
    return userWithoutPassword;
 }
 
 /* ======================
    USER DATA
 ====================== */
-function getCurrentUser() {
+export function getCurrentUser() {
   const user = localStorage.getItem("currentUser");
   if (!user) throw new Error("No current user");
   return JSON.parse(user);
@@ -85,43 +76,23 @@ export async function searchMany(type, value, fields, baseData = {}) {
 
 // api/api.js
 
-export async function getPosts(userId, start = 0, limit = 10) {
+export async function getList(type,userId, start = 0, limit = 10) {
     try {
-        // --- שינוי קריטי: החלפנו את הכתובת לשרת המקומי ---
-        let url = `http://localhost:3000/posts?_start=${start}&_limit=${limit}`;
-        
+        let url = `http://localhost:3000/${type}?_start=${start}&_limit=${limit}`;
+
         if (userId) {
             url += `&userId=${userId}`;
         }
         
         const res = await fetch(url);
-        if (!res.ok) throw new Error("Failed to fetch posts");
+        if (!res.ok) throw new Error(`Failed to fetch ${type}`);
         return await res.json();
     } catch (error) {
-        console.error("Error fetching posts:", error);
+        console.error(`Error fetching ${type}:`, error);
         return [];
     }
 }
 
-export async function getAlbums(userId, start = 0, limit = 10) {
-  try {
-    // בניית הכתובת: פונים לשרת המקומי (כדי שהוספות יישמרו)
-    // ומוסיפים תמיכה ב-_start ו-_limit
-    let url = `http://localhost:3000/albums?_start=${start}&_limit=${limit}`;
-    
-    // אם שלחנו userId, מסננים לפי המשתמש
-    if (userId) {
-      url += `&userId=${userId}`;
-    }
-
-    const res = await fetch(url);
-    if (!res.ok) throw new Error("Failed to fetch albums");
-    return await res.json();
-  } catch (error) {
-    console.error("Error fetching albums:", error);
-    return [];
-  }
-}
 
 export async function updateAlbum(id, title) {
   return updateData("albums", id, { title });
@@ -134,7 +105,7 @@ export async function updateAlbum(id, title) {
 
 // api/api.js
 
-export async function getPhotosByAlbum(albumId, start = 0, limit = 10) {
+export async function getPhotosByAlbum(type, Id, start = 0, limit = 10) {
   try {
     const res = await fetch(
       `${BASE_URL}/photos?albumId=${albumId}&_start=${start}&_limit=${limit}`
@@ -184,29 +155,6 @@ export async function createData(type, payload) {
     headers: { "Content-Type": "application/json" },
     body: JSON.stringify(payload)
   });
-}
-
-
-// api/api.js
-
-export async function getTodos(userId, start = 0, limit = 10) {
-  try {
-    // בניית הכתובת עם תמיכה בטעינה חלקית (_start, _limit)
-    // אנו פונים לשרת המקומי (localhost:3000) כדי שהנתונים יישמרו
-    let url = `http://localhost:3000/todos?_start=${start}&_limit=${limit}`;
-    
-    // אם שלחנו userId, נוסיף סינון (אחרת זה יביא את המטלות של כולם)
-    if (userId) {
-      url += `&userId=${userId}`;
-    }
-
-    const res = await fetch(url);
-    if (!res.ok) throw new Error("Failed to fetch todos");
-    return await res.json();
-  } catch (error) {
-    console.error("Error fetching todos:", error);
-    return [];
-  }
 }
 
 export async function searchOne(

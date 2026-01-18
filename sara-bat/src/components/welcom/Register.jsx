@@ -1,12 +1,13 @@
 import { useState } from "react";
-import { useNavigate, Link } from "react-router-dom";
-import { login } from "../api/api";
+import { useNavigate } from "react-router-dom";
+import { signUp } from "../../api/api";
 
-function Login({ onLogin }) {
+function Register() {
   const navigate = useNavigate();
   const [formData, setFormData] = useState({
     username: "",
-    password: ""
+    password: "",
+    verifyPassword: ""
   });
 
   const handleChange = (e) => {
@@ -16,22 +17,21 @@ function Login({ onLogin }) {
 
   const handleSubmit = async (e) => {
     e.preventDefault();
-    
 
+    if (formData.password !== formData.verifyPassword) {
+      alert("הסיסמאות לא תואמות");
+      return;
+    }
 
     try {
-      const user = await login(formData.username, formData.password);
- 
-      if (!user) {
-        alert("שם משתמש או סיסמה שגויים");
-        return;
-      }
+      await signUp(formData.username);
 
-      localStorage.setItem("currentUser", JSON.stringify(user));
-      onLogin({ username: user.username, id: user.id });
-      console.log( user);
-      navigate(`/users/${user.id}/home`);
-
+      navigate("/complete-profile", {
+        state: {
+          username: formData.username,
+          password: formData.password
+        }
+      });
     } catch (err) {
       alert(err.message);
     }
@@ -56,14 +56,18 @@ function Login({ onLogin }) {
         required
       />
 
-      <button type="submit">Login</button>
+      <input
+        type="password"
+        name="verifyPassword"
+        placeholder="verify password"
+        value={formData.verifyPassword}
+        onChange={handleChange}
+        required
+      />
 
-      <p>
-        לא רשום?
-        <Link to="/register"> הרשם כאן</Link>
-      </p>
+      <button type="submit">Register</button>
     </form>
   );
 }
 
-export default Login;
+export default Register;

@@ -56,6 +56,7 @@ function ListPage({
   };
 
   useEffect(() => {
+    
     console.log("Fetching data...");
     setPage(1);
     setHasMore(true);

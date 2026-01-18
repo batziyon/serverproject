@@ -1,12 +1,12 @@
 import { Routes, Route, Navigate } from "react-router-dom";
 import { useState, useEffect } from "react";
 
-import Login from "./components/Login";
-import Register from "./components/Register";
-import CompleteProfile from "./components/CompleteProfile";
+import Login from "./components/welcom/Login.jsx";
+import Register from "./components/welcom/Register.jsx";
+import CompleteProfile from "./components/welcom/CompleteProfile.jsx";
 import Home from "./components/Home";
 import Info from "./components/Info";
-import HomePage from "./page/HomePage.jsx";
+import HomePage from "./components/HomePage.jsx";
 
 import TodosPage from "./page/TodosPage.jsx";
 import PostsPage from "./page/PostsPage.jsx";
@@ -45,22 +45,6 @@ function App() {
         path="/complete-profile"
         element={<CompleteProfile setUser={setUser} />}
       />
-
-      {/* מוגן */}
-      {/* <Route
-        path="/"
-        element={
-          <PrivateRoute user={user}>
-            <Home user={user} />
-          </PrivateRoute>
-        }
-      >
-        <Route index element={<Info />} />
-        <Route path="info" element={<Info />} />
-        <Route path="todos" element={<TodosPage />} />
-        <Route path="posts" element={<PostsPage />} />  
-        <Route path="albums" element={<AlbumsPage />} />
-      </Route> */}
       <Route
         path="/"
         element={

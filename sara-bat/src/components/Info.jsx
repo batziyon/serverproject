@@ -1,15 +1,15 @@
 import { Navigate, useParams, useNavigate } from "react-router-dom";
-
+import { getCurrentUser } from "../api/api";
 function Info() {
-  const data = JSON.parse(localStorage.getItem("currentUser"));
-  const user = data;
+  const user = getCurrentUser();
 
   if (!user) {
     return <div>אין משתמש מחובר</div>;
   }
   const { userId } = useParams();
   if (userId !== user.id) {
-    return <Navigate to="/login" />; // החזר לדף הבית אם ID שונה
+    alert("אין לך גישה לעמוד זה.");
+    return <Navigate to={`http://localhost:5173/users/${user.id}/home`} />; // החזר לדף הבית אם ID שונה
   }
 
   const navigate = useNavigate();

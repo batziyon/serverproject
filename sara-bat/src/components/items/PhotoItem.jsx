@@ -1,5 +1,5 @@
 import { useState } from "react";
-import styles from "../css/PhotoItem.module.css";
+import styles from "../../css/PhotoItem.module.css";
 
 function PhotoItem({ item, onDelete, onChange }) {
   const [isEditing, setIsEditing] = useState(false);

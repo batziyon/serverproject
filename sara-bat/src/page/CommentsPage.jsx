@@ -1,6 +1,6 @@
 import { Navigate, useParams } from "react-router-dom";
-import CommentsItem from "../components/CommentsItem";
-import { getCommentsByPost } from "../api/api";
+import CommentsItem from "../components/items/CommentsItem";
+import { getCommentsByPost ,getCurrentUser} from "../api/api";
 import ListPage from "../components/ListPage";
 
 export default function CommentsPage() {
@@ -10,9 +10,10 @@ export default function CommentsPage() {
     const start = (page - 1) * limit;
     return await getCommentsByPost(postId, start, limit);
   };
-  const currentUser = JSON.parse(localStorage.getItem("currentUser"));
+  const currentUser = getCurrentUser();
   if (userId !== currentUser.id) {
-    return <Navigate to="/login" />; // החזר לדף הבית אם ID שונה
+    alert("אין לך גישה לעמוד זה.");
+    return <Navigate to={`http://localhost:5173/users/${currentUser.id}/home`} />; // החזר לדף הבית אם ID שונה
   }
 
 

@@ -1,13 +1,14 @@
 import { Navigate, useParams } from "react-router-dom";
 import ListPage from "../components/ListPage";
-import PostItem from "../components/PostItem";
-import { getPosts } from "../api/api";
+import PostItem from "../components/items/PostItem";
+import { getList,getCurrentUser } from "../api/api";
 
 export default function PostsPage() {
   const { userId } = useParams();
-  const currentUser = JSON.parse(localStorage.getItem("currentUser"));
+  const currentUser = getCurrentUser();
   if (userId !== currentUser.id) {
-    return <Navigate to="/login" />; // החזר לדף הבית אם ID שונה
+     alert("אין לך גישה לעמוד זה.");
+        return <Navigate to={`http://localhost:5173/users/${currentUser.id}/home`} />; // החזר לדף הבית אם ID שונה
   }
   const updatePost = (item, updatedFields) => ({
     ...item,
@@ -16,7 +17,7 @@ export default function PostsPage() {
 
   const fetchMyPosts = async (page, limit) => {
     const start = (page - 1) * limit;
-    return await getPosts(userId, start, limit);
+    return await getList("posts", userId, start, limit);
   };
 
   return (

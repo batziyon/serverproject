@@ -1,13 +1,14 @@
 import { Navigate, useParams } from "react-router-dom";
 import ListPage from "../components/ListPage";
-import TodoItem from "../components/TodoItem";
-import { getTodos } from "../api/api";
+import TodoItem from "../components/items/TodoItem";
+import { getList ,getCurrentUser} from "../api/api";
 
 export default function TodosPage() {
   const { userId } = useParams();
-  const currentUser = JSON.parse(localStorage.getItem("currentUser"));
+  const currentUser = getCurrentUser();
   if (userId !== currentUser.id) {
-    return <Navigate to="/login" />; // החזר לדף הבית אם ID שונה
+    alert("אין לך גישה לעמוד זה.");
+    return <Navigate to={`http://localhost:5173/users/${currentUser.id}/home`} />; // החזר לדף הבית אם ID שונה
   }
 
   const updateTodo = (item, newTitle) => {
@@ -15,7 +16,7 @@ export default function TodosPage() {
   };
   const fetchMyTodos = async (page, limit) => {
     const start = (page - 1) * limit;
-    return await getTodos(userId, start, limit);
+    return await getList("todos", userId, start, limit);
   };
 
   return (

@@ -1,14 +1,15 @@
 import React from "react";
 import { useParams, Navigate } from "react-router-dom";
 import ListPage from "../components/ListPage";
-import AlbumItem from "../components/AlbumItem";
-import { getAlbums } from "../api/api";
+import AlbumItem from "../components/items/AlbumItem";
+import { getList ,getCurrentUser} from "../api/api";
 
 export default function AlbumsPage() {
   const { userId } = useParams();
-  const currentUser = JSON.parse(localStorage.getItem("currentUser"));
+  const currentUser = getCurrentUser();
   if (userId !== currentUser.id) {
-    return <Navigate to="/login" />; // החזר לדף הבית אם ID שונה
+     alert("אין לך גישה לעמוד זה.");
+        return <Navigate to={`http://localhost:5173/users/${currentUser.id}/home`} />; // החזר לדף הבית אם ID שונה
   }
 
   const updateAlbum = (item, newTitle) => {
@@ -17,7 +18,7 @@ export default function AlbumsPage() {
 
   const fetchMyAlbums = async (page, limit) => {
     const start = (page - 1) * limit;
-    return await getAlbums(userId, start, limit);
+    return await getList("albums", userId, start, limit);
   };
 
   return (

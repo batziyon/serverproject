@@ -1,16 +1,15 @@
 import {Navigate ,useParams } from "react-router-dom";
-import ListPage from "../components/ListPage";
-import PhotoItem from "../components/items/PhotoItem";
-import { getPhotosByAlbum ,getCurrentUser} from "../api/api"; 
+import ListPage from "./ListPage";
+import PhotoItem from "./items/PhotoItem";
+import { getPhotosByAlbum } from "../api/api"; 
 
 export default function PhotosPage() {
   console.log("Rendering PhotosPage");
   
   const { userId, albumId } = useParams();
-  const currentUser = getCurrentUser();
+  const currentUser = JSON.parse(localStorage.getItem("currentUser"));
   if (userId !== currentUser.id) {
-   alert("אין לך גישה לעמוד זה.");
-        return <Navigate to={`http://localhost:5173/users/${currentUser.id}/home`} />; // החזר לדף הבית אם ID שונה
+    return <Navigate to="/login" />; // החזר לדף הבית אם ID שונה
   }
   const updatePhoto = (item, newTitle) => ({ ...item, title: newTitle });
   const fetchMyPhotos = async (page, limit) => {
