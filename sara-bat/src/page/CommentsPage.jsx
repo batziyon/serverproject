@@ -1,5 +1,5 @@
 import { Navigate, useParams } from "react-router-dom";
-import CommentsItem from "./commentsItem";
+import CommentsItem from "../components/CommentsItem";
 import { getCommentsByPost } from "../api/api";
 import ListPage from "../components/ListPage";
 

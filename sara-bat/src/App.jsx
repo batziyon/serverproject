@@ -10,7 +10,7 @@ import HomePage from "./page/HomePage.jsx";
 
 import TodosPage from "./page/TodosPage.jsx";
 import PostsPage from "./page/PostsPage.jsx";
-import AlbumsPage from "./page/AlbumsPage.js";
+import AlbumsPage from "./page/AlbumsPage.jsx";
 import PhotosPage from "./page/PhotosPage.jsx";
 import CommentsPage from "./page/CommentsPage.jsx";
 // Route מוגן

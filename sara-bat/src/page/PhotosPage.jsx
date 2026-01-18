@@ -1,6 +1,6 @@
 import {Navigate ,useParams } from "react-router-dom";
 import ListPage from "../components/ListPage";
-import PhotoItem from "./PhotoItem";
+import PhotoItem from "../components/PhotoItem";
 import { getPhotosByAlbum } from "../api/api"; 
 
 export default function PhotosPage() {

@@ -1,6 +1,6 @@
 import { Navigate, useParams } from "react-router-dom";
 import ListPage from "../components/ListPage";
-import PostItem from "./PostItem";
+import PostItem from "../components/PostItem";
 import { getPosts } from "../api/api";
 
 export default function PostsPage() {

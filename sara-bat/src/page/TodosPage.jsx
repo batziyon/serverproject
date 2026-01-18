@@ -1,6 +1,6 @@
 import { Navigate, useParams } from "react-router-dom";
 import ListPage from "../components/ListPage";
-import TodoItem from "./TodoItem";
+import TodoItem from "../components/TodoItem";
 import { getTodos } from "../api/api";
 
 export default function TodosPage() {

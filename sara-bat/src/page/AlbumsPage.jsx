@@ -1,3 +1,4 @@
+import React from "react";
 import { useParams, Navigate } from "react-router-dom";
 import ListPage from "../components/ListPage";
 import AlbumItem from "../components/AlbumItem";
