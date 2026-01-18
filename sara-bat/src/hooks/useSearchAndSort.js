@@ -6,7 +6,8 @@ function useSearchAndSort({
   items,
   setFiltered,
   searchableFields,
-  baseData
+  baseData,
+  userId
 }) {
   const [searchValue, setSearchValue] = useState("");
   const [searchField, setSearchField] = useState(
@@ -19,17 +20,15 @@ function useSearchAndSort({
         setFiltered(items);
         return;
       }
-
       const result = await searchOne(
         title.toLowerCase(),
         searchValue,
         searchField === "all" ? searchableFields : [searchField],
-        baseData
+        baseData,
+        userId
       );
-
-      setFiltered(result ? [result] : []);
+      setFiltered(result || []);
     };
-
     runSearch();
   }, [searchValue, searchField, items]);
 
@@ -46,11 +45,8 @@ function useSearchAndSort({
       setFiltered(items);
       return;
     }
-
     setFiltered(
-      items.filter(item =>
-        item.completed === (completed === "done")
-      )
+      items.filter(item => item.completed === (completed === "done"))
     );
   };
 
@@ -60,7 +56,8 @@ function useSearchAndSort({
     searchField,
     setSearchField,
     sortBy,
-    extraFilter
+    extraFilter,
+    setFiltered
   };
 }
 

@@ -7,6 +7,7 @@ import {
   createData,
   searchOne
 } from "../api/api";
+import useCrud from "../hooks/useCrud";
 
 function ListPage({
   title,
@@ -36,6 +37,8 @@ function ListPage({
   const [searchValue, setSearchValue] = useState("");
   const [searchField, setSearchField] = useState(searchableFields[0] || "all");
   const [newItems, setNewItems] = useState([]);
+
+  const crud = useCrud({ title, baseData, setItems, setFiltered, onUpdate, primaryField });
 
   /* ===== LOAD DATA ===== */
   const loadData = async (pageNum) => {
@@ -115,29 +118,9 @@ function ListPage({
   };
 
   /* ===== CRUD ===== */
-  const handleUpdate = async (...args) => {
-    const payload = onUpdate(...args);
-    const updated = await updateData(
-      title.toLowerCase(),
-      args[0].id,
-      payload
-    );
-
-    setItems(prev => prev.map(i => i.id === updated.id ? updated : i));
-    setFiltered(prev => prev.map(i => i.id === updated.id ? updated : i));
-  };
-
-  const handleToggle = async (todo) => {
-    const updated = await toggleCompleted(todo);
-    setItems(prev => prev.map(i => i.id === updated.id ? updated : i));
-    setFiltered(prev => prev.map(i => i.id === updated.id ? updated : i));
-  };
-
-  const handleDelete = async (id) => {
-    await deleteData(title.toLowerCase(), id);
-    setItems(prev => prev.filter(i => i.id !== id));
-    setFiltered(prev => prev.filter(i => i.id !== id));
-  };
+  const handleUpdate = crud.update;
+  const handleToggle = crud.toggle;
+  const handleDelete = crud.remove;
 
   /* ===== ADD ===== */
   const addNewRow = () => {
@@ -157,15 +140,7 @@ function ListPage({
   const handleAddAll = async () => {
     const valid = newItems.filter(i => i[primaryField]);
     if (!valid.length) return;
-
-    const created = await Promise.all(
-      valid.map(item =>
-        createData(title.toLowerCase(), { ...item, ...baseData })
-      )
-    );
-
-    setItems(prev => [...created, ...prev]);
-    setFiltered(prev => [...created, ...prev]);
+    await crud.createMany(valid);
     setNewItems([]);
   };
 

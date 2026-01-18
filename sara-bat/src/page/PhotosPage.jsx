@@ -1,7 +1,7 @@
 import {Navigate ,useParams } from "react-router-dom";
 import ListPage from "../components/ListPage";
 import PhotoItem from "../components/items/PhotoItem";
-import { getPhotosByAlbum ,getCurrentUser} from "../api/api"; 
+import { getInnerList ,getCurrentUser} from "../api/api"; 
 
 export default function PhotosPage() {
   console.log("Rendering PhotosPage");
@@ -15,7 +15,7 @@ export default function PhotosPage() {
   const updatePhoto = (item, newTitle) => ({ ...item, title: newTitle });
   const fetchMyPhotos = async (page, limit) => {
      const start = (page - 1) * limit;
-     return await getPhotosByAlbum(albumId, start, limit);
+     return await getInnerList("photos","albumId",albumId, start, limit);
   };
 
   return (

@@ -9,11 +9,8 @@ function useListData(fetchData, limit) {
 
   const loadData = async (pageNum) => {
     setIsLoading(true);
-
     const data = await fetchData(pageNum, limit);
-
     if (data.length < limit) setHasMore(false);
-
     if (pageNum === 1) {
       setItems(data);
       setFiltered(data);
@@ -21,7 +18,6 @@ function useListData(fetchData, limit) {
       setItems(prev => [...prev, ...data]);
       setFiltered(prev => [...prev, ...data]);
     }
-
     setIsLoading(false);
   };
 

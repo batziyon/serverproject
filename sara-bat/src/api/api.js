@@ -7,108 +7,99 @@ async function request(url, options = {}) {
 }
 
 export async function login(username, password) {
-  const users = await request(
-    `${BASE_URL}/users?username=${username}&password=${password}`
-  );
+  try {
+    const users = await request(
+      `${BASE_URL}/users?username=${username}&password=${password}`
+    );
     const { website, ...userWithoutPassword } = users[0];
-  return users.length ? userWithoutPassword : null;
+    return users.length ? userWithoutPassword : null;
+  } catch (error) {
+    console.error("Login error:", error);
+    return null;
+  }
 }
 
 export async function signUp(username) {
-  const users = await request(
-    `${BASE_URL}/users?username=${encodeURIComponent(username)}`
-  );
-  if (users.length) throw new Error("שם משתמש כבר קיים");
+  try {
+    const users = await request(
+      `${BASE_URL}/users?username=${encodeURIComponent(username)}`
+    );
+    if (users.length) throw new Error("שם משתמש כבר קיים");
+  } catch (error) {
+    console.error("SignUp error:", error);
+    throw error;
+  }
 }
 
 export async function createUser(user) {
-  if (!user.username) throw new Error("חסר שם משתמש");
-
-  const fullUser = await request(`${BASE_URL}/users`, {
-    method: "POST",
-    headers: { "Content-Type": "application/json" },
-    body: JSON.stringify(user)
-  });
-   const { website, ...userWithoutPassword } = fullUser;
-   return userWithoutPassword;
+  try {
+    if (!user.username) throw new Error("חסר שם משתמש");
+    const fullUser = await request(`${BASE_URL}/users`, {
+      method: "POST",
+      headers: { "Content-Type": "application/json" },
+      body: JSON.stringify(user)
+    });
+    const { website, ...userWithoutPassword } = fullUser;
+    return userWithoutPassword;
+  } catch (error) {
+    console.error("CreateUser error:", error);
+    throw error;
+  }
 }
 
-/* ======================
-   USER DATA
-====================== */
 export function getCurrentUser() {
-  const user = localStorage.getItem("currentUser");
-  if (!user) throw new Error("No current user");
-  return JSON.parse(user);
+  try {
+    const user = localStorage.getItem("currentUser");
+    if (!user) throw new Error("No current user");
+    return JSON.parse(user);
+  } catch (error) {
+    console.error("GetCurrentUser error:", error);
+    return null;
+  }
 }
 
 export async function fetchUserData(endpoint) {
   try {
     const user = getCurrentUser();
     return await request(`${BASE_URL}/${endpoint}?userId=${user.id}`);
-  } catch {
+  } catch (error) {
+    console.error("FetchUserData error:", error);
     return [];
   }
-};
+}
 
 export async function toggleCompleted(todo) {
-  return request(`${BASE_URL}/todos/${todo.id}`, {
-    method: "PATCH",
-    headers: { "Content-Type": "application/json" },
-    body: JSON.stringify({ completed: !todo.completed })
-  });
+  try {
+    return await request(`${BASE_URL}/todos/${todo.id}`, {
+      method: "PATCH",
+      headers: { "Content-Type": "application/json" },
+      body: JSON.stringify({ completed: !todo.completed })
+    });
+  } catch (error) {
+    console.error("ToggleCompleted error:", error);
+    throw error;
+  }
 }
-export async function searchMany(type, value, fields, baseData = {}) {
-  // דוגמה: שלח בקשת GET עם פרמטרים מתאימים
-  const params = new URLSearchParams({
-    q: value,
-    fields: fields.join(","),
-    ...baseData
-  });
-  const res = await fetch(`/api/${type}/search?${params}`);
-  if (!res.ok) return [];
-  return await res.json();
-}
-/* ======================
-   POSTS
-====================== */
-// api/api.js
 
-// api/api.js
-
-export async function getList(type,userId, start = 0, limit = 10) {
-    try {
-        let url = `http://localhost:3000/${type}?_start=${start}&_limit=${limit}`;
-
-        if (userId) {
-            url += `&userId=${userId}`;
-        }
-        
-        const res = await fetch(url);
-        if (!res.ok) throw new Error(`Failed to fetch ${type}`);
-        return await res.json();
-    } catch (error) {
-        console.error(`Error fetching ${type}:`, error);
-        return [];
+export async function getList(type, userId, start = 0, limit = 10) {
+  try {
+    let url = `${BASE_URL}/${type}?_start=${start}&_limit=${limit}`;
+    if (userId) {
+      url += `&userId=${userId}`;
     }
+    const res = await fetch(url);
+    if (!res.ok) throw new Error(`Failed to fetch ${type}`);
+    return await res.json();
+  } catch (error) {
+    console.error(`Error fetching ${type}:`, error);
+    return [];
+  }
 }
 
-
-export async function updateAlbum(id, title) {
-  return updateData("albums", id, { title });
-}
-
-/* ======================
-   PHOTOS
-====================== */
-// 
-
-// api/api.js
-
-export async function getPhotosByAlbum(type, Id, start = 0, limit = 10) {
+export async function getInnerList(to, from, Id, start = 0, limit = 10) {
   try {
     const res = await fetch(
-      `${BASE_URL}/photos?albumId=${albumId}&_start=${start}&_limit=${limit}`
+      `${BASE_URL}/${to}?${encodeURIComponent(from)}=${encodeURIComponent(Id)}&_start=${start}&_limit=${limit}`
     );
     if (!res.ok) throw new Error("Failed to fetch photos");
     return await res.json();
@@ -118,43 +109,40 @@ export async function getPhotosByAlbum(type, Id, start = 0, limit = 10) {
   }
 }
 
-export async function getCommentsByPost(postId, start = 0, limit = 10) {
+export async function updateData(type, id, payload) {
   try {
-    const res = await fetch(
-      `${BASE_URL}/comments?postId=${postId}&_start=${start}&_limit=${limit}`
-    );
-    if (!res.ok) throw new Error("Failed to fetch comments");
-    return await res.json();
+    return await request(`${BASE_URL}/${type}/${id}`, {
+      method: "PATCH",
+      headers: { "Content-Type": "application/json" },
+      body: JSON.stringify(payload)
+    });
   } catch (error) {
-    console.error("Error fetching comments:", error);
-    return [];
+    console.error("UpdateData error:", error);
+    throw error;
   }
 }
 
-
-/* ======================
-   CRUD כללי
-====================== */
-export async function updateData(type, id, payload) {
-  return request(`${BASE_URL}/${type}/${id}`, {
-    method: "PATCH",
-    headers: { "Content-Type": "application/json" },
-    body: JSON.stringify(payload)
-  });
-}
-
 export async function deleteData(type, id) {
-  await request(`${BASE_URL}/${type}/${id}`, { method: "DELETE" });
-  return true;
+  try {
+    await request(`${BASE_URL}/${type}/${id}`, { method: "DELETE" });
+    return true;
+  } catch (error) {
+    console.error("DeleteData error:", error);
+    throw error;
+  }
 }
 
 export async function createData(type, payload) {
-  console.log("Creating data:", type, payload);
-  return request(`${BASE_URL}/${type}`, {
-    method: "POST",
-    headers: { "Content-Type": "application/json" },
-    body: JSON.stringify(payload)
-  });
+  try {
+    return await request(`${BASE_URL}/${type}`, {
+      method: "POST",
+      headers: { "Content-Type": "application/json" },
+      body: JSON.stringify(payload)
+    });
+  } catch (error) {
+    console.error("CreateData error:", error);
+    throw error;
+  }
 }
 
 export async function searchOne(
@@ -162,7 +150,6 @@ export async function searchOne(
   value,
   fields = [],
   extraParams = {},
-  userId
 ) {
   try {
     let allResults = [];
@@ -175,15 +162,11 @@ export async function searchOne(
       );
       if (!res.ok) continue;
       const data = await res.json();
-      
-      // סינון התוצאות על פי הערך
       const filteredResults = data.filter(item => 
         item[field] && item[field].toString().toLowerCase().includes(value.toLowerCase())
       );
-
       allResults = allResults.concat(filteredResults);
     }
-    // הסרת כפילויות לפי id
     const unique = Array.from(new Map(allResults.map(i => [i.id, i])).values());
     return unique;
   } catch (error) {
